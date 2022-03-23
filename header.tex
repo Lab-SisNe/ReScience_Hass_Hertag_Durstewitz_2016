@@ -80,15 +80,15 @@
 
 
 %% --- Abstract ---------------------------------------------------------------
-%% \ifdefempty{\articleABSTRACT}{}{
-%%   {\small \sffamily \textbf{Abstract} \articleABSTRACT \par}
-%% }
+\ifdefempty{\articleABSTRACT}{}{
+  {\small \sffamily \textbf{Abstract} \articleABSTRACT \par}
+}
 
 
 %% --- Replication ------------------------------------------------------------
-%% \ifdefempty{\replicationBIB}{}{
-%%   {\small \sffamily \bfseries A replication of}
-%%   \ifdefempty{\replicationURL}
-%%        {\href{http://doi.org/\replicationDOI}{\small \sffamily \replicationBIB}}
-%%        {\href{\replicationURL}{\small \sffamily \replicationBIB}}.
-%% \par }
+\ifdefempty{\replicationBIB}{}{
+  {\small \sffamily \bfseries A replication of}
+  \ifdefempty{\replicationURL}
+       {\href{http://doi.org/\replicationDOI}{\small \sffamily \cite{\replicationBIB}}}
+       {\href{\replicationURL}{\small \sffamily \cite{\replicationBIB}}}.
+\par }
