@@ -26,12 +26,12 @@ BrianLogger.suppress_name('resolution_conflict', 'device')
 
 #####----------||| Simulation control ||||----------#####
 
-control_param = {'Duration': 1000, # in ms
+control_param = {'Duration': 31000, # in ms
                  'Time step': 0.05, # in ms
                  'method': 'rk4', # brian2 integration methods
                  'Neurons per stripe': 1000,
                  'Stripes': 1,
-                 'Recover/Save': 3, ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
+                 'Recover/Save': 'Save', ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
                  'run': True, ## Insert False to avoid running; otherwise, insert True
                  'seed': False, ## Insert seed number; otherwise, insert False
                  }
@@ -747,11 +747,11 @@ if control_param['run']:
     
     
     ###############----------||| Raster plot |||----------###############
-    # fig, ax = subplots()
-    # ax.scatter(cortex.spikemonitor.t/ms, cortex.spikemonitor.i, 1)
-    # ax.set_xlabel('t (ms)')
-    # ax.set_ylabel('neuron index')
-    # fig.savefig('{}/rasterplot.png'.format(simulation_dir))
+    fig, ax = subplots()
+    ax.scatter(cortex.spikemonitor.t/ms, cortex.spikemonitor.i, 1)
+    ax.set_xlabel('t (ms)')
+    ax.set_ylabel('neuron index')
+    fig.savefig('{}/rasterplot.png'.format(simulation_dir))
     
    
     
