@@ -78,105 +78,16 @@ class CortexNetwork():
         Regular input generator, created only if regular_input is called.
     
     regularsynapse: brian2 Synapses
-        Synapses from the regular input to the network, created only if regular_input is called.       
-    
-    Method
-    ------
-    group_name_to_group_idc(group)
-        A function that converst group name to indices.
-    
-    neuron_idc_to_group_name(idc)
-        A function that converts neuron indices to group name
-    
-    neuron_monitors(MonitorsSetup)
-        A function that generates a NeuronMonitor to record neuron variables.
-    
-    synapses_monitors(MonitorsSetup)
-        A function that generates a NeuronMonitor to record synaptic variables.
-    
-    poisson_input(PoissonInput)
-        A function that generates a Poisson input to the network.
-    
-    regular_input(RegularInput)
-        A function that generates a regular input to the network.
-    
-    run(t)
-        A function that initiates the proper network simulation
-    
-    group_name_to_neuron_idc(name)
-        A function that returns neuron indices present in a group 
-    
-    get_source_from_target(ind)
-        A function that returns presynaptic neuron indices connected to the neurons presented as indices in the function call..
-    
-    get_target_from_source(ind)
-        A function that returns postsynaptic neurons indices connected to the the neurons presented as indices in the function call.
-    
-    get_neurons_from_synapses(ind)
-        A function that return pre- and post- synaptic neuron indices from synapses indices.
-    
-    group_name_to_synapses_idc(names, neuron_index=False)
-        A function that returns synapses indices from the specified source and target neuron groups.
-        
-    group_name_to_AMPAsynapses_idc(names)
-        A function that return AMPA synapses from the specified source and target groups.
-        
-    group_name_to_GABAsynapses_idc(names)
-        A function that return GABA synapses from the specified source and target groups.
-        
-    group_name_to_NMDAsynapses_idc(names)
-        A function that return NMDA synapses from the specified source and target groups.
-        
-    neuron_params(NeuronsSetup, sim_dir, bins=False)
-        Analysis of parameters in the specified neurons.
-        
-    group_params(GroupSetup, sim_dir, bins=False, histograms=True)
-        Analysis of parameters in the specified groups.
-        
-    synapses_params(self, GroupSetup, sim_dir, bins=False, neuron_index=False)
-        Analysis of parameters from synapses between the specified groups.
-        
-    neuron_t_test(pop1, pop2, sim_dir)
-        Student's t-test on neuron parameters.
-        
-    neuron_mw_test(self, pop1, pop2, sim_dir)
-        Mann-Whitney U-test on neuron parameters.
-        
-    synapses_t_test(self, pop1, pop2, sim_dir, target=True)
-        Student's t-test on synaptic parameters.
-        
-    synapses_mw_test(pop1, pop2, sim_dir, target=True)
-        Mann-Whitney U-test on synaptic parameters.
-        
-    ISI_analysis(self, analysis, sim_dir)
-        Analysis of ISI, including correlations with a first formula.
-        
-    DAcorrelation_analysis(self, analysis, sim_dir)
-        Analysis of correlations of ISI with a second formula.
-        
-    V_analysis(self, analysis, sim_dir)
-        Analysis of voltage traces.
-        
-    frequence_spectrum(analysis, sim_dir)
-        Analysis of frequence spectrum of currents (necessary to estimate LFP).
-    
-    population_rate(self, analysis, sim_dir)
-        Analysis of spiking rate of the specified groups.
-
-    rate_distribution(self, analysis, sim_dir)
-        Analysis and stratification of firing rate on the specified groups.
-        
-    raster_plot(self, sim_dir, xlims=False)
-        Raster plot of network spiking.
-        
-    
+        Synapses from the regular input to the network, created only if regular_input is called.      
     """
 
     def __init__(self, NeuPar,V0, STypPar,SynPar,SPMtx, group_distr,
                  constant_current,fluctuating_current,
-                 scales2,
-                 method, time_step,          
-                 simseed):
+                 scales2, method, time_step, simseed):
+        """
+        Parameters
+        __________
+        """
         
         seed(simseed)
         
@@ -189,7 +100,6 @@ class CortexNetwork():
         
         sourceAMPA_gmaxscale, sourceGABA_gmaxscale, sourceNMDA_gmaxscale, targetAMPA_gmaxscale, targetGABA_gmaxscale, targetNMDA_gmaxscale = scales2
 
-        
         tau_on_AMPA = STypPar[1, 0]*ms
         tau_on_GABA = STypPar[1, 1]*ms
         tau_on_NMDA = STypPar[1, 2]*ms
@@ -254,11 +164,9 @@ class CortexNetwork():
         dV = int(I_tot >= I_ref) * int(t - last_spike < 5 * ms) * (-g_L/C)*(V - V_dep) + (1 - int(I_tot >= I_ref) * int(t - last_spike < 5 * ms)) * (I_tot + I_exp - g_L * (V - E_L) - w)/C: volt/second
         dV/dt = dV: volt
         dw/dt = int(w > w_V - D0/tau_w) * int(w < w_V + D0/tau_w) * int(V <= V_T) * int(I_tot < I_ref) * -(g_L * (1 - exp((V - V_T)/delta_T)) + dD0/tau_w)*dV: amp
-        
-        
+             
         dg_AMPA_off/dt = - (1/tau_off_AMPA) * g_AMPA_off: siemens
         dg_AMPA_on/dt = - (1/tau_on_AMPA) * g_AMPA_on: siemens
-        
                 
         dg_GABA_off/dt = -(1/tau_off_GABA)*  g_GABA_off: siemens
         dg_GABA_on/dt = -(1/tau_on_GABA) *  g_GABA_on: siemens 
@@ -492,36 +400,12 @@ class CortexNetwork():
         print('REPORT: Synapses set\n')  
         
         print('REPORT: Network set\n')
-        
-    def group_name_to_group_idc(self, group):
-    
-        group_dict = {'PC_L23': [0,], 'IN_L_L23': [1,], 'IN_L_d_L23': [2,], 'IN_CL_L23': [3,], 'IN_CL_AC_L23': [4,], 'IN_CC_L23': [5,], 'IN_F_L23': [6,],
-                             'PC_L5': [7,], 'IN_L_L5': [8,], 'IN_L_d_L5': [9,], 'IN_CL_L5': [10,], 'IN_CL_AC_L5':[11,], 'IN_CC_L5': [12,], 'IN_F_L5': [13,],
-                             'PC': [0, 7], 'IN': [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13],
-                             'IN_L': [1, 8], 'IN_L_d': [2, 9],'IN_CL': [3, 10], 'IN_CL_AC': [4, 11], 'IN_CC': [5, 12], 'IN_F': [6, 13],
-                             'IN_L23': [1, 2, 3, 4, 5, 6], 'IN_L5': [8, 9, 10, 11, 12, 13],
-                             'L_23': [i for i in range(7)], 'L_5': [i for i in range(7, 14)],
-                             'all': [i for i in range(14)],
-                             }
-        return group_dict[group]
-    
-    def group_idc_to_group_name(self, idc):
-        
-        idc_dict = {0: 'PC_L23', 1: 'IN_L_L23', 2: 'IN_L_d_L23', 3: 'IN_CL_L23', 4: 'IN_CL_AC_L23', 5: 'IN_CC_L23', 6: 'IN_F_L23',
-                    7: 'PC_L5', 8: 'IN_L_L5', 9: 'IN_L_d_L5', 10: 'IN_CL_L5', 11: 'IN_CL_AC_L5', 12: 'IN_CC_L5', 13: 'IN_F_L5',
-                    }
-        
-        return idc_dict[idc]
-    
-    def neuron_idc_to_group_name(self, idc):
-        
-        for group in range(len(self.group_distr)):
-            for stripe in range(len(self.group_distr[0])):
-                if idc in self.group_distr[group][stripe]:
-                    return self.group_idc_to_group_name(group), stripe
-       
+               
     def neuron_monitors(self, MonitorsSetup):
-                
+        """
+        A function that generates a NeuronMonitor to record neuron variables.
+        """  
+            
         for monitor in MonitorsSetup:
             if len(monitor[2]) == 1 and monitor[2][0][0] == 'all' and monitor[2][0][1] == 'all':
                 neuron_idc = True
@@ -533,6 +417,9 @@ class CortexNetwork():
         self.net.add(*self.neuronmonitors.values())
         
     def synapses_monitors(self, MonitorsSetup):
+        """
+        A function that generates a NeuronMonitor to record synaptic variables.
+        """
         
         self.synapsesmonitors = {}
         for monitor in MonitorsSetup:         
@@ -542,6 +429,9 @@ class CortexNetwork():
         self.net.add(*self.synapsesmonitors.values())
             
     def poisson_input(self, PoissonInput):
+        """
+        A function that generates a Poisson input to the network.
+        """
         
         poisson_source = []
         poisson_target = []
@@ -638,7 +528,9 @@ class CortexNetwork():
         self.net.add(self.poissoninput, self.poissonsynapse, self.poissonspikemonitor)
 
     def regular_input(self, RegularInput):
-        
+        """
+        A function that generates a regular input to the network.
+        """
         regular_source = []
         regular_target = []
         regular_type = []
@@ -730,14 +622,75 @@ class CortexNetwork():
         self.net.add(self.regularinput, self.regularsynapse, self.regularspikemonitor)
                    
     def run(self, t):
-        
+        """
+        A function that initiates the proper network simulation
+        """
         if len(self.ta) > 0:
             ta = TimedArray(self.ta, dt=self.time_step*ms)
    
         self.net.run(t, report='text', report_period=10*second)
 
-    def group_name_to_neuron_idc(self, name):
+    def get_source_from_target(self, ind):
+        """
+        A function that returns presynaptic neuron indices connected to the neurons presented as indices in the function call..
+        """
+        _ = np.isin(self.target_arr, ind)
         
+        return self.source_arr[_]
+
+    def get_target_from_source(self, ind):
+        """
+        A function that returns postsynaptic neurons indices connected to the the neurons presented as indices in the function call.
+        """
+        _ = np.isin(self.source_arr, ind)
+        
+        return self.target_arr[_]
+    
+    def get_neurons_from_synapses(self, ind):
+        """
+        A function that return pre- and post- synaptic neuron indices from synapses indices.
+        """
+        return self.target_arr[ind], self.source_arr[ind]
+    
+    def group_name_to_group_idc(self, group):
+        """
+        A function that converst group name to indices.
+        """
+        group_dict = {'PC_L23': [0,], 'IN_L_L23': [1,], 'IN_L_d_L23': [2,], 'IN_CL_L23': [3,], 'IN_CL_AC_L23': [4,], 'IN_CC_L23': [5,], 'IN_F_L23': [6,],
+                             'PC_L5': [7,], 'IN_L_L5': [8,], 'IN_L_d_L5': [9,], 'IN_CL_L5': [10,], 'IN_CL_AC_L5':[11,], 'IN_CC_L5': [12,], 'IN_F_L5': [13,],
+                             'PC': [0, 7], 'IN': [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13],
+                             'IN_L': [1, 8], 'IN_L_d': [2, 9],'IN_CL': [3, 10], 'IN_CL_AC': [4, 11], 'IN_CC': [5, 12], 'IN_F': [6, 13],
+                             'IN_L23': [1, 2, 3, 4, 5, 6], 'IN_L5': [8, 9, 10, 11, 12, 13],
+                             'L_23': [i for i in range(7)], 'L_5': [i for i in range(7, 14)],
+                             'all': [i for i in range(14)],
+                             }
+        return group_dict[group]
+    
+    def group_idc_to_group_name(self, idc):
+        """
+        A function that converts neuron indices to group name.
+        """
+        idc_dict = {0: 'PC_L23', 1: 'IN_L_L23', 2: 'IN_L_d_L23', 3: 'IN_CL_L23', 4: 'IN_CL_AC_L23', 5: 'IN_CC_L23', 6: 'IN_F_L23',
+                    7: 'PC_L5', 8: 'IN_L_L5', 9: 'IN_L_d_L5', 10: 'IN_CL_L5', 11: 'IN_CL_AC_L5', 12: 'IN_CC_L5', 13: 'IN_F_L5',
+                    }
+        
+        return idc_dict[idc]
+    
+    def neuron_idc_to_group_name(self, idc):
+        """
+        A function that returns neuron indices present in a group. 
+        """
+        
+        for group in range(len(self.group_distr)):
+            for stripe in range(len(self.group_distr[0])):
+                if idc in self.group_distr[group][stripe]:
+                    return self.group_idc_to_group_name(group), stripe
+
+    
+    def group_name_to_neuron_idc(self, name):
+        """
+        A function that returns neuron indices from group name.
+        """
         idcs = []
         
         for analysand in name:
@@ -761,25 +714,11 @@ class CortexNetwork():
                     idcs.extend(self.group_distr[group][stripe])
 
         return np.unique(np.asarray(idcs)).astype(int)
-
-    def get_source_from_target(self, ind):
-        
-        _ = np.isin(self.target_arr, ind)
-        
-        return self.source_arr[_]
-
-    def get_target_from_source(self, ind):
-        
-        _ = np.isin(self.source_arr, ind)
-        
-        return self.target_arr[_]
-    
-    def get_neurons_from_synapses(self, ind):
-        
-        return self.target_arr[ind], self.source_arr[ind]
         
     def group_name_to_synapses_idc(self, names, neuron_index=False):
-        
+        """
+        A function that return synapses indices from group name.
+        """
         both = []
         
         for name in names:
@@ -812,7 +751,9 @@ class CortexNetwork():
         return np.asarray(both)
 
     def group_name_to_AMPAsynapses_idc(self, names):
-        
+        """
+        A function that return AMPA synapses from the specified source and target groups.
+        """
         synidc = self.group_name_to_synapses_idc(names)
         synparidc = self.SynPar[0, synidc]
         AMPA = np.where(synparidc==1)[0]
@@ -820,7 +761,9 @@ class CortexNetwork():
         return synidc[AMPA]
     
     def group_name_to_GABAsynapses_idc(self, names):
-        
+        """
+        A function that return GABA synapses from the specified source and target groups.
+        """
         synidc = self.group_name_to_synapses_idc(names)
         synparidc = self.SynPar[0, synidc]
         GABA = np.where(synparidc==2)[0]
@@ -828,7 +771,9 @@ class CortexNetwork():
         return synidc[GABA]
 
     def group_name_to_NMDAsynapses_idc(self, names):
-        
+        """
+        A function that return NMDA synapses from the specified source and target groups.
+        """
         synidc = self.group_name_to_synapses_idc(names)
         synparidc = self.SynPar[0, synidc]
         NMDA = np.where(synparidc==3)[0]
@@ -837,7 +782,9 @@ class CortexNetwork():
     
 
     def neuron_params(self, NeuronsSetup, sim_dir, bins=False):
-        
+        """
+        Summary and statistics of neuron parameters in the specified groups.
+        """
         if not os.path.isdir('{}/NeuronParams'.format(sim_dir)):
             os.mkdir('{}/NeuronParams'.format(sim_dir))
 
@@ -1430,7 +1377,9 @@ class CortexNetwork():
                     print(text, file=f)
                 
     def groups_params(self, GroupSetup, sim_dir, bins=False, histograms=True):
-        
+        """
+        Analysis of neuron paramaters in the specified groups.
+        """
         if not os.path.isdir('{}/GroupParams'.format(sim_dir)):
             os.mkdir('{}/GroupParams'.format(sim_dir))
         
@@ -1644,7 +1593,10 @@ class CortexNetwork():
                     print(text, file=f)
 
     def synapses_params(self, GroupSetup, sim_dir, bins=False, neuron_index=False):
-
+        """
+        Analysis of synaptic parameters between the specified groups.
+        """
+        
         if not os.path.isdir('{}/SynapsesParams'.format(sim_dir)):
             os.mkdir('{}/SynapsesParams'.format(sim_dir))
         
@@ -1917,7 +1869,9 @@ class CortexNetwork():
       
                 
     def neuron_t_test(self, pop1, pop2, sim_dir):
-        
+        """
+        Student's t-test on neuron parameters.
+        """
         if not os.path.isdir('{}/Neuronttest'.format(sim_dir)):
             os.mkdir('{}/Neuronttest'.format(sim_dir))
         
@@ -1997,7 +1951,9 @@ class CortexNetwork():
             print(text, file=f)
 
     def neuron_mw_test(self, pop1, pop2, sim_dir):
-        
+        """
+        Mann-Whitney U-test on neuron parameters.
+        """
         if not os.path.isdir('{}/Neuronmwtest'.format(sim_dir)):
             os.mkdir('{}/Neuronmwtest'.format(sim_dir))
         
@@ -2077,7 +2033,9 @@ class CortexNetwork():
             print(text, file=f)
         
     def synapses_t_test(self, pop1, pop2, sim_dir, target=True):
-      
+        """
+        Student's t-test on synapses parameters.
+        """
         if not os.path.isdir('{}/Synapsesttest'.format(sim_dir)):
             os.mkdir('{}/Synapsesttest'.format(sim_dir))
         
@@ -2238,7 +2196,9 @@ class CortexNetwork():
               print(text, file=f)
         
     def synapses_mw_test(self, pop1, pop2, sim_dir, target=True):
-      
+        """
+        Mann-Whitney U-test on synapses parameters.
+        """
         if not os.path.isdir('{}/Synapsesmwtest'.format(sim_dir)):
             os.mkdir('{}/Synapsesmwtest'.format(sim_dir))
         
@@ -2404,7 +2364,9 @@ class CortexNetwork():
         
     
     def ISI_analysis(self, analysis, sim_dir):
-
+        """
+        Analysis of ISI, including correlations according to a first formula.
+        """
         print('REPORT: Starting ISI analysis\n')
         if not os.path.isdir('{}/ISI_analysis'.format(sim_dir)):
             os.mkdir('{}/ISI_analysis'.format(sim_dir))      
@@ -2739,7 +2701,9 @@ class CortexNetwork():
         return spiketime_list, zerolagCC_list, ISImean_list, ISIstd_list, ISICV_list, binned_spiketimes_list, return_expecvalue_list, return_var_list, autocorrvalue_list, autocorrt_list
        
     def DAcorrelation_analysis(self, analysis, sim_dir):
-        
+        """
+        Correlations of ISI according to a second formula.
+        """
         print('REPORT: Starting DA correlation analysis\n')
         if not os.path.isdir('{}/correlationDA_analysis'.format(sim_dir)):
             os.mkdir('{}/correlationDA_analysis'.format(sim_dir))
@@ -2937,7 +2901,9 @@ class CortexNetwork():
         
 
     def V_analysis(self, analysis, sim_dir):
-            
+        """
+        Analysis of voltage trace
+        """
         print('REPORT: Starting V analysis\n')
         
         if 'V' not in self.neuronmonitors:
@@ -3180,7 +3146,9 @@ class CortexNetwork():
     
                
     def frequence_spectrum(self, analysis, sim_dir):
-
+        """
+        Frequence spectrum of the specified current (I_tot is used to estimate LFP). 
+        """
         print('REPORT: Starting frequence analysis\n')
         
         Imonitort_list = []
@@ -3288,7 +3256,9 @@ class CortexNetwork():
         return Imonitort_list, I_list, LFPfrequence_list, LFPpower_list, MALFPfrequence_list, MALFPpower_list
         
     def population_rate(self, analysis, sim_dir):
-        
+        """
+        Analysis of firing rate.
+        """
         if not os.path.isdir('{}/Rate'.format(sim_dir)):
             os.mkdir('{}/Rate'.format(sim_dir))
                 
@@ -3382,7 +3352,9 @@ class CortexNetwork():
         return popratet_lists, popratecount_lists, popratefreq_lists
         
     def rate_distribution(self, analysis, sim_dir):
-        
+        """
+        Group stratification according to firing rates.
+        """
         ratedistribution_total_list = []
         ratedistribution_count_list = []
         ratedistribution_neuron_list = []
@@ -3468,7 +3440,9 @@ class CortexNetwork():
         return ratedistribution_total_list, ratedistribution_count_list, ratedistribution_neuron_list
                     
     def raster_plot(self, sim_dir, xlims=False):
-        
+        """
+        Raster plot of spiking activity.
+        """
         fig, ax = subplots()  
         
         if type(xlims) is not bool:
@@ -3491,7 +3465,19 @@ class CortexNetwork():
 
     
 def sourcetarget(SPMtx):
+    """
+    Function that generates sequences of pre- and postsynaptic indices from SPMtx.
     
+    Parameters
+    ----------
+    SPMtx: Numpy array
+        Matrix with synaptic indices according to pre- and post- synaptic indices, generated in NetworkSetup.
+    
+    Returns
+    ------
+    tuple
+        An array with indices of target neurons in the first position and and array with indices of source neurons in the last one. 
+    """
     target_arr = np.zeros((np.max(SPMtx).astype(int)))
     source_arr = np.zeros((np.max(SPMtx).astype(int)))
     
@@ -3511,10 +3497,45 @@ def sourcetarget(SPMtx):
     return target_arr.astype(int), source_arr.astype(int)
 
 def moving_average(x, w):
+    """
+    Moving average of an array (in 'valid' values, excluding the first and last elements which don't fit the averaging window).
+    
+    Parameters
+    ----------
+    x: Numpy array/list
+        Sequence to be sumbmitted to moving average
+    w: int
+        Size of averaging window.
+    
+    Returns
+    -------
+    Numpy array
+        Averaged sequence.
+        
+    """
     return np.convolve(x, np.ones(w), 'valid') / w
 
 def build_hist(list_):
+     """
+    Function that helps building histograms and plots according to density of distribution
+    The first element of the output tuple can be used in Matplotlib histogram using density. 
+    The second and third elements of the output tuple can be used in x- and y-axis, respectively, to build a density plot.
     
+    Parameters
+    ----------
+    list_: list/Numpy array
+        Assemble of elements.
+    
+    Returns
+    -------
+    tuple
+        First element: Numpy array
+            Bins dividing data in fractions of the same size; the number of bins is the rounded square root of the sample size.
+        Second element: Numpy array
+            Ordered array eith extreme points of the the distribution and middle points of each bin. poins
+        Third element: Numpy array
+            Array with propability in each bin.       
+    """
     arr_= np.asarray(list_)
     ntotal = np.sum(list_)
     nbinlimits = int(round(np.sqrt(len(arr_))))
