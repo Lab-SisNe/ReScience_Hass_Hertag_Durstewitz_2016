@@ -7,7 +7,7 @@ and Durstewitz (2016) [1].
 This set of files enables one to run and analyse the simulation results of the reimplemented prefrontal cortex mo-
 del.
 
-######################## Files #################################
+################################## FILES ##################################
 To perform a simulation, one should run one of the 'Main' files. 'Main.py' is the default main script, where details
 of simulation and analyses are specified, as described in the next section. Others main files are set to reproduce
 specific analyses:
@@ -33,13 +33,13 @@ the structure previously obtained. 'SimulationSetup.py' complements the simulati
 tains equations that are necessary to calculate f-I functions and to draw phase portraits. 'SingleNeuron.py' allows
 one to simulate single simpAdEx neurons.
 
-##################### Simulation setup ########################
+################################## SIMULATION SETUP ##################################
 In each run, a simulation directory is created as 'Simulation_{}', where {} is the lowest not used integer. The files
 thar are automatically created during the simulation are saved to the simulation directory.
 At the beginning of simulation, details of simulation setup are saved as 'SIMULATION_INFO.txt'.
 Parameters and connections setup can be generated and saved as txt files for later use.  
 
-########## Control parameters ##########
+#################### Control parameters ####################
 * 'control_params' sets the main simulation control features:
 - Duration: duration of simulation in ms.
 - Time step: step for numerical integration in ms.
@@ -54,7 +54,7 @@ be used to generate and save network setups for later use, or else to analyse co
 - Seed: if Y (float/integer), a seed for random number generator only in the proper simulation with Brian 2 (not in the
  network setup) is set.
 
-########## Scales ##########
+#################### Scales ####################
 g_max_scale, pCon_scale and param_std_scale deal with network parameter setup and are saved with it. In order to change
 these scales in a new simulation, they must not be recovered from a previous one.
 
@@ -65,7 +65,7 @@ these scales in a new simulation, they must not be recovered from a previous one
 - inhibitory to inhibitory synapses
 Default: [1, 1, 1, 1]
 
------------------------------------------------------------------------
+-----------------------------------------------
 
 * pCon_scale: scale for pCon (in order):
 - excitatory to excitatory synapses
@@ -74,7 +74,7 @@ Default: [1, 1, 1, 1]
 - inhibitory to inhibitory synapses
 Default: [1, 1, 1, 1]
 
------------------------------------------------------------------------
+-----------------------------------------------
 
 * param_std_scale: scale for membrane parameters std in each group
 10 x 14 matrix
@@ -86,7 +86,7 @@ Order in axis 1: [0] PC_L23 // [1] IN_L_L23 // [2] IN_L_d_L23 // [3] IN_CL_L23 /
 
 Default: 10 x 14 matrix full of ones
 
------------------------------------------------------------------------
+-----------------------------------------------
 
 [source/target][AMPA/GABA/NMDA]_gmaxscale work inside CortexNetwork, and changes do take place if network setup is retrieved
 from a previous one.
@@ -99,11 +99,11 @@ Inner list: scale details: [group, stripe, scale value]
 
 Ex. targetAMPA_gmaxscale = [['all', 0, 0.2]]
 
-########## Clustering ##########
+#################### Clustering ####################
 
 * recur_clustering: if neighborhood rule is to be applied or not
 
-########## Stimuli ##########
+#################### Stimuli ####################
 If no specifications, default settings are applied
 
 * constant_current: corresponds to the background current (in pA)
@@ -113,7 +113,7 @@ Inner list: configuration for each group inside the column
 
 Default: [[250, 200, 200, 200, 200, 200, 200, 250, 200, 200, 200, 200, 200, 200]]
 
------------------------------------------------------------------------
+-----------------------------------------------
 
 * fluctuating_current: further fluctuating current
 Default: no fluctuating current
@@ -124,7 +124,7 @@ fluctuating_current = [0, # Start
                         [['sin(t)' for i in range(14)] for k in range(control_param['Stripes'])] # one function to each group and stripe, written as str, as a function on t
                         ]
 
------------------------------------------------------------------------
+-----------------------------------------------
 
 * PoissonStimuli: Poisson stimulation
 Outermost structure: List of lists
@@ -147,7 +147,7 @@ PoissonStimuli = [
                     [100, 1, 30, 2, 0,  2500, 2600, [[7, 0, 0.1],],],
                   ]
 
------------------------------------------------------------------------
+-----------------------------------------------
 
 * Regular stimuli
 Outermost structure: List of lists
@@ -170,7 +170,7 @@ RegularStimuli = [
                  [1, 1, 500, 0.1, 0, 2500, 2505, [[0, 0, 0.1],],],
                 ]
 
-########## Monitors ##########
+#################### Monitors ####################
 * NeuronMonitors: monitors to record neuron variables
 Outermost structure: List of lists
 Main list: all sets of neuron monitors
@@ -193,7 +193,7 @@ NeuronMonitor = [
                 ['I_GABA', ['I_GABA',], [['all', 'all'],],],
                   ]
 
------------------------------------------------------------------------
+-----------------------------------------------
 
 * SynapsesMonitors: monitors to record synapse variables
 Outermost structure: List of lists
@@ -212,7 +212,7 @@ SynapsesMonitor = [
                   ]   
 
 
-##################### Simulation setup ########################
+################################## ANALYSES SETUP ##################################
 
 analysis_params is a dictionary containing automatic analyses specifications in each of its items.
 Outputs are pictures and reports saved in subdirectories inside 'Simulation_X' and lists with results for further manipulation if desired.
@@ -238,7 +238,7 @@ return_var_list elements: list of binned spiking variance for each neuron
 autocorrvalue_list elements: 2d array with autocorrelation for each neuron in the rows
 autocorrt_list elements: list of time values used in autocorrelation
 
------------------------------------------------------------------------
+-----------------------------------------------
 
 * 'DAcorrelation' - correlations using formula extracted from [3]
 
@@ -255,7 +255,7 @@ zerolagCC_list elements: list of the pairwise zero-lag crosscorrelation between 
 autocorrvalue_list elements: 2d array with autocorrelation for each neuron in the rows
 autocorrt_list elements: list of time values used in autocorrelation
 
------------------------------------------------------------------------
+-----------------------------------------------
 
 * 'V' - analyses of V traces after extraction of spike events (individual mean, std and V_T - mean)
 
@@ -271,7 +271,7 @@ Vmean_list elements: list of individual V mean
 Vstd_list elements: list of individual V std
 Vsubthres_list elements: list of individual V_T - V mean
 
------------------------------------------------------------------------
+-----------------------------------------------
 
 * 'Vcorr' - analysis of V traces without spike event extraction and V correlations
 
@@ -290,7 +290,7 @@ Vgroup_list elements: collective V traces (as mean of inidividual traces at each
 VzerolagCC_list elements: lists of pairwise zero-lag cross-correlation between V traces (without normalization)
 VnormalizedzerolagCC_list: lists of pairwise zero-lag cross-correlation between V traces (normalized by stds )
 
------------------------------------------------------------------------
+-----------------------------------------------
 
 * 'Frequency' - analysis of SPD of currents. Total I_tot in the column is used as estimation of LFP.
 
@@ -309,7 +309,7 @@ I_list elements: lists of I values
 LFPfrequency_list: lists of frequency values
 LFPpower_list: lists of the corresponding power values
 
------------------------------------------------------------------------
+-----------------------------------------------
 
 * 'Populational rate' - Rate as the number of spikes in the group by the number of neurons in the spike and by the time interval in each bin
 
@@ -326,7 +326,7 @@ popratet_lists elements: lists of time points
 popratecount_lists elements: lists of the corresponding spike counts
 popratefreq_lists elements: lists of the corresponding spike counts
 
------------------------------------------------------------------------
+-----------------------------------------------
 
 * 'Rate distribution'- 	Proportion of neurons spiking in each frequency band (defined in 'Bins')
 
@@ -343,7 +343,7 @@ ratedistribution_total_list elements: total number of cells
 ratedistribution_count_list elements: number of cells in each frequency band
 ratedistribution_neuron_list: neuron indices in each frequency band
 
------------------------------------------------------------------------
+-----------------------------------------------
 
 Raster plots can be automatically built and saved with raster_plot method of CortexNetwork.
 
@@ -351,13 +351,7 @@ Example:
 cortex.raster_plot(simulation_dir, tlims=[max(0, control_param['Duration']-4000), control_param['Duration']])
     
 
-For questions of comments, please contact:
-Marcelo Rafael Silva Rempel (marcelorempel@usp.br / marcelo.rafael@hotmail.com)
-
-Department of Physics
-Faculty of Philosophy, Sciences and Letters at Ribeirão Preto
-University of Sao Paulo
-
+-----------------------------------------------
 Reference:
 [1] J. Hass, L. Hertäg, and D. Durstewitz. “A Detailed Data-Driven Network Model of Prefrontal Cortex Reproduces
 Key Features of In Vivo Activity.” In: PLOS Computational Biology 12.5 (May 2016), pp. 1–29. DOI: 10.1371/jour-
@@ -369,3 +363,12 @@ data with application to the Pearson cross-correlation.” In: Journal of Neurop
 
 [3] P. Dayan and L. F. Abbott. Theoretical Neuroscience: Computational and Mathematical Modeling of Neural
 Systems. Cambridge, MA: The MIT Press, 2005.
+
+----------------------------------------------------------------------------------------------
+
+For questions of comments, please contact:
+Marcelo Rafael Silva Rempel (marcelorempel@usp.br / marcelo.rafael@hotmail.com)
+
+Department of Physics
+Faculty of Philosophy, Sciences and Letters at Ribeirão Preto
+University of Sao Paulo
