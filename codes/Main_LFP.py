@@ -4,7 +4,8 @@ from NetworkSetup import NetworkSetup
 from time import time   
 from warnings import filterwarnings
 
-##### Setting simulation directory (as 'simulation_{}', with {} being the lowest integer corresponding to non-existing directory)
+
+##### Setting simulation directory (as 'simulation_{}', with {} being the lowest non-negative integer corresponding to non-existing directory)
 
 filterwarnings("ignore", category=RuntimeWarning) 
 BrianLogger.suppress_name('resolution_conflict', 'device')
@@ -25,18 +26,19 @@ simulation_dir = set_dir()
 
 #####----------||| Simulation control ||||----------#####
 
-control_param = {'Duration': 31000, # in ms
+control_param = {'Duration': 21000, # in ms
                  'Time step': 0.05, # in ms
+                 'Noise': False, # D if noise present (int or float); anything else otherwise
                  'Method': 'rk4', # brian2 integration methods
                  'Neurons per stripe': 1000,
                  'Stripes': 1,
-                 'Recover/Save': 'Save', ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
+                 'Recover/Save': 0, ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
                  'run': True, ## Insert False to avoid running; otherwise, insert True
                  'seed': 0, ## Insert seed number; otherwise, insert False
                  }
 
 ###############----------||| Scales |||----------###############
-##### Obs: scale changing does not take place if membrane and synaptic parameters are being recovered from previous simulation
+##### Obs: changing in scales1 does not take place if membrane and synaptic parameters are being recovered from previous simulation
 ##### Order of scale factors: [0] E -> E // [1] I -> E // [2] E -> I // [3] I -> I 
 gmax_scale = [1, 1, 1, 1]
 pCon_scale = [1, 1, 1, 1]
@@ -51,13 +53,28 @@ param_std_scale = np.ones((10, 14))# Scale of std of membrane parameters for eac
 
 scales1 = gmax_scale, pCon_scale, param_std_scale
 
-sourceAMPA_gmaxscale = []
-sourceGABA_gmaxscale = []
-sourceNMDA_gmaxscale = []
+###### Obs: changing in scales2 can be performed in simulations with recovering of previous setup
 
-targetAMPA_gmaxscale = []
+
+sourceAMPA_gmaxscale = [
+                        # ['all', 0, alpha]
+                        ]
+sourceGABA_gmaxscale = [
+                        # ['all', 0, beta]
+                        ]
+sourceNMDA_gmaxscale = [
+                        # ['all', 0, alpha]
+                        ]
+
+
+targetAMPA_gmaxscale = [
+                        # ['IN_L', 0, alpha],
+                        
+                        ]
 targetGABA_gmaxscale = []
-targetNMDA_gmaxscale = []
+targetNMDA_gmaxscale = [
+                        
+                        ]
 
 ##### List of lists
 ##### Each scale to implement <--- scale details: [0] - target/source group; [1] - stripe; [2] - scale value
@@ -66,6 +83,8 @@ targetNMDA_gmaxscale = []
 
 scales2 = sourceAMPA_gmaxscale, sourceGABA_gmaxscale, sourceNMDA_gmaxscale, targetAMPA_gmaxscale, targetGABA_gmaxscale, targetNMDA_gmaxscale
 
+
+noise = control_param['Noise']
 ###############----------||| Clustering |||----------###############
 ##### Obs: clustering change does not take place if membrane and synaptic parameters are being recovered from previous simulation
 recur_clustering = True
@@ -87,10 +106,11 @@ clustering = recur_clustering
 ############### Background constant current ###############
 ##### List of lists (main list #Stripe  <-- sublist #Group)
 
-# Iexc = 250
-# Iinh = 200
-# constant_current = [[Iexc, Iinh, Iinh, Iinh, Iinh, Iinh, Iinh, Iexc, Iinh, Iinh, Iinh, Iinh, Iinh, Iinh] for i in range(control_param['Stripes'])
-#                     ]
+Iexc = 250 
+Iinh =  200 
+constant_current = [[Iexc, Iinh, Iinh, Iinh, Iinh, Iinh, Iinh, Iexc, Iinh, Iinh, Iinh, Iinh, Iinh, Iinh] for i in range(control_param['Stripes'])
+                    ]
+
 
 ############### Fluctuating current ###############
 
@@ -113,7 +133,7 @@ clustering = recur_clustering
 ##### Sublist: Individual set of stimulus
 ##### In each sublist: [0] - Number of cells in the poissonic spiking group (CV ~ 1)
 ####                   [1] - Excitatory(1) or inhibitory (2)
-####                   [2] - Frequence (in Hz)
+####                   [2] - Frequency (in Hz)
 ####                   [3] - Synaptic strength (in nS)
 ####                   [4] - failure probability
 ####                   [5] - Start time (in ms)
@@ -171,7 +191,14 @@ RegularStimuli = [
 
 NeuronMonitor = [
                 # ['V', ['V'], [['all', 'all'],],], #--> to V analysis
+                # ['w', ['w'], [['all', 'all'],],],             
                 ['I_tot', ['I_tot',], [['all', 'all'],],], #--> to LFP
+                # ['I_AMPA', ['I_AMPA',], [['all', 'all'],],],
+                # ['I_NMDA', ['I_NMDA',], [['all', 'all'],],],
+                # ['I_GABA', ['I_GABA',], [['all', 'all'],],],
+                # ['g_AMPA', ['g_AMPA',], [['all', 'all'],],],
+                # ['g_NMDA', ['g_NMDA',], [['all', 'all'],],],
+                # ['g_GABA', ['g_GABA',], [['all', 'all'],],],
                   ]
 
 ############### Synapse Monitors ###############
@@ -220,32 +247,79 @@ stop = control_param['Duration']
 #####                             'Minimum spike number': minimum number of spikes in the selected neurons
 
 ##### Output:
-##### spiketime_list elements: list of spike times
-##### zerolagCC_list elements: list of the pairwise zero-lag crosscorrelation between the analysed neurons
 ##### ISImean_list elements: list of the ISI means for each analysed neuronc
 ##### ISIstd_list elements: list of the ISI std for each analysed neuron
 ##### ISICV_list elements: list of the ISI std for each analysed neuron
-##### binned_spiketimes_list elements: 2d-array with time bins in each row (0: bin with no spike; 1: bin with spike)
-##### return_expecvalue_list elements: list of binned spiking expected value for each neuron (# spikes / # bins)
-##### return_var_list elements: list of binned spiking variance for each neuron
+
+analysis_params['ISI analysis'] = {
+                            # 'Analysis 0': {'Group': [['all',0],],
+                            #               'Start': start,
+                            #               'Stop': stop,
+                            #               'Minimum spike number': 3,
+                            #               'Graphs': True,
+                                          # },
+                            }
+
+
+############### ISI autocorrelation1 ###############
+
+##### Dicts of dicts
+##### Main dict: set of ISI autocorrelation analysis (one for each item)
+##### Subdict: Analysis setting - 'Group': groups to analyse - (list of lists)
+#####                                                          Main list: set of groups
+#####                                                          Sublist: group ([0] - Group name; [1] - stripe index)
+#####                             'Start': start time (in ms)
+#####                             'Stop': stop time (in ms)
+#####                             'Time bin': size of Time bin (in ms)
+#####                             'Minimum spike number': minimum number of spikes in the selected neurons
+#####                             'Graphs': True if graphs are to be generated; False otherwise
+
+##### Output:
 ##### autocorrvalue_list elements: 2d array with autocorrelation for each neuron in the rows
 ##### autocorrt_list elements: list of time values used in autocorrelation
 
-analysis_params['ISI'] = {
+analysis_params['ISI autocorrelation1'] = {
                             # 'Analysis 0': {'Group': [['all',0],],
                             #               'Start': start,
                             #               'Stop': stop,
                             #               'Time bin': 2,
                             #               'Minimum spike number': 11,
+                            #               'Graphs': False,
                             #               },
-                            
+                            }
+
+############### ISI crosscorrelation1 ###############
+
+##### Dicts of dicts
+##### Main dict: set of ISI crosscorrelation analysis (one for each item)
+##### Subdict: Analysis setting - 'Group': groups to analyse - (list of lists)
+#####                                                          Main list: set of groups
+#####                                                          Sublist: group ([0] - Group name; [1] - stripe index)
+#####                             'Start': start time (in ms)
+#####                             'Stop': stop time (in ms)
+#####                             'Time bin': size of Time bin (in ms)
+#####                             'Minimum spike number': minimum number of spikes in the selected neurons
+#####                             'Graphs': True if graphs are to be generated; False otherwise
+
+##### Output:
+##### zerolagCC_list elements: list of the pairwise zero-lag crosscorrelation between the analysed neurons
+
+analysis_params['ISI crosscorrelation1'] = {
+                            # 'Analysis 0': {'Group': [['all',0],],
+                            #               'Start': start,
+                            #               'Stop': stop,
+                            #               'Time bin': 2,
+                            #               'Minimum spike number': 11,
+                            #               'Graphs': False,
+                            #               },
                             }
 
 
-############### Dayan Abbot auto- and crosscorrelation analysis #############################
+
+############### ISI correlation2 #############################
 
 ##### Dicts of dicts
-##### Main dict: set of ISI analysis (one for each item)
+##### Main dict: set of ISI correlation analysis (one for each item) - with a second formula
 ##### Subdict: Analysis setting - 'Group': groups to analyse - (list of lists)
 #####                                                          Main list: set of groups
 #####                                                          Sublist: group ([0] - Group name; [1] - stripe index)
@@ -253,48 +327,94 @@ analysis_params['ISI'] = {
 #####                             'Stop': stop time (in ms)
 #####                             'Time bin': size of time bins (in ms)
 #####                             'Minimum spike number': minimum number of spikes in the selected neurons
+#####                             'Graphs': True if graphs are to be generated; False otherwise
 
 ##### Output:
-##### zerolagCC_list elements: list of the pairwise zero-lag crosscorrelation between the analysed neurons
-##### autocorrvalue_list elements: 2d array with autocorrelation for each neuron in the rows
-##### autocorrt_list elements: list of time values used in autocorrelation
+##### DAzerolagCC_list elements: list of the pairwise zero-lag crosscorrelation between the analysed neurons
+##### DAautocorrvalue_list elements: 2d array with autocorrelation for each neuron in the rows
+##### DAautocorrt_list elements: list of time values used in autocorrelation
 
-analysis_params['DAcorrelation'] = {
+analysis_params['ISI correlation2'] = {
                                 # 'Analysis 0': {'Group': [['all',0],],
                                 #               'Start': start,
                                 #               'Stop': stop,
                                 #               'Time bin': 2,
                                 #               'Minimum spike number': 11,
+                                #               'Graphs': False,
                                 #               },
-                                
                                     }
+
+############### ISI Pearson correlation ###############
+   
+##### Dicts of dicts
+##### Main dict: set of ISI Pearson cross correlation analysis (one for each item) - with a second formula
+##### Subdict: Analysis setting - 'Group': groups to analyse - (list of lists)
+#####                                                          Main list: set of groups
+#####                                                          Sublist: group ([0] - Group name; [1] - stripe index)
+#####                             'Start': start time (in ms)
+#####                             'Stop': stop time (in ms)
+#####                             'Time bin': size of time bins (in ms)
+#####                             'Minimum spike number': minimum number of spikes in the selected neurons
+#####                             'Minimum lag': minimum lag for cross-correlation analysis
+#####                             'Maximum lag': maximum lag for cross-correlation analysis
+#####                             'Graphs': True if graphs are to be generated; False otherwise
+ 
+##### Output:
+##### lag_array_list elements: list of correlation lags
+##### correlation_mean_list elements: list of corresponding correlation values
+         
+analysis_params['ISI Pearson'] = {
+                            # 'Analysis 0': {'Group': [['all',0],],
+                            #               'Start': start,
+                            #               'Stop': stop,
+                            #               'Time bin': 2,
+                            #               'Minimum spike number': 11,
+                            #               'Minimum lag': -30,
+                            #               'Maximum lag': 30,
+                            #               'Graphs': True,
+                                          # },
+                            }
 
 ############### V analysis ###############
 
 ##### Dicts of dicts
-##### Main dict: set of V analysis (one for each item)
+##### Main dict: set of V analysis  (one for each item)
 ##### Subdict: Analysis setting - 'Group': groups to analyse - (list of lists)
 #####                                                          Main list: set of groups
 #####                                                          Sublist: group ([0] - Group name; [1] - stripe index)
 #####                             'Start': start time (in ms)
 #####                             'Stop': stop time (in ms)
 #####                             'Minimum spike number': minimum number of spikes in the selected neurons
+#####                             'Graphs': True if graphs are to be generated; False otherwise
+
+##### Output:
+##### Vmean_list elements: list of individual V mean
+##### Vstd_list elements: list of individual V std
+##### Vsubthres_list elements: list of individual V_T - V mean
 
 
-analysis_params['V'] = {
+analysis_params['V analysis'] = {
                         # 'Analysis 1': {'Group': [['all', 0,],],
                         #                   'Start': start,
                         #                   'Stop': stop,
-                        #                   'Minimum spike number': 11,
-                        #                 },
-                        # 'Analysis 1': {'Group': [['PC', 0,],],
-                        #                   'Start': start,
-                        #                   'Stop': stop,
-                        #                   'Minimum spike number': 11,
+                        #                   'Minimum spike number': 3,
+                        #                   'Graphs': True,
                         #                 },
 
                             }
 
+
+############### V correlation analysis ###############
+
+##### Dicts of dicts
+##### Main dict: set of V correlation analysis (one for each item)
+##### Subdict: Analysis setting - 'Group': groups to analyse - (list of lists)
+#####                                                          Main list: set of groups
+#####                                                          Sublist: group ([0] - Group name; [1] - stripe index)
+#####                             'Start': start time (in ms)
+#####                             'Stop': stop time (in ms)
+#####                             'Minimum spike number': minimum number of spikes in the selected neurons
+#####                             'Graphs': True if graphs are to be generated; False otherwise
 
 ##### Output:
 ##### monitor_t: list of time points
@@ -304,45 +424,24 @@ analysis_params['V'] = {
 ##### VzerolagCC_list elements: lists of pairwise zero-lag cross-correlation between V traces (without normalization)
 ##### VnormalizedzerolagCC_list: lists of pairwise zero-lag cross-correlation between V traces (normalized by stds )
 
-
-############### Vcorr analysis ###############
-
-##### Dicts of dicts
-##### Main dict: set of V analysis (one for each item)
-##### Subdict: Analysis setting - 'Group': groups to analyse - (list of lists)
-#####                                                          Main list: set of groups
-#####                                                          Sublist: group ([0] - Group name; [1] - stripe index)
-#####                             'Start': start time (in ms)
-#####                             'Stop': stop time (in ms)
-#####                             'Minimum spike number': minimum number of spikes in the selected neurons
-
-
-analysis_params['Vcorr'] = {
+analysis_params['V correlation'] = {
                         # 'Analysis 1': {'Group': [['all', 0,],],
                         #                   'Start': start,
                         #                   'Stop': stop,
                         #                   'Minimum spike number': 1,
+                        #                   'Graphs': True,
                         #                 },
 
                             }
 
+############### Frequency analysis ###############
 
-##### Output:
-##### monitor_t: list of time points
-##### Vindividualstd_list elements: lists of std of individual V traces
-##### Vindividualmean_list elements: lists of mean of individual V traces
-##### Vgroup_list elements: collective V traces (as mean of inidividual traces at each time point) 
-##### VzerolagCC_list elements: lists of pairwise zero-lag cross-correlation between V traces (without normalization)
-##### VnormalizedzerolagCC_list: lists of pairwise zero-lag cross-correlation between V traces (normalized by stds )
-
-############### Frequence analysis ###############
-
-##### This analysis estimates the frequence spectrum of LFP through the total synaptic current in the population
+##### This analysis estimates the frequency spectrum of LFP through the total synaptic current in the population
 ##### It's necessary to set the respective neuron monitor to the source current (i.e. neuronmonitors['I_tot']
 ##### recording self.group.I_tot to analyse the LFP component due to the total current)
 
 ##### Dicts of dicts
-##### Main dict: set of Frequence analysis (one for each item)
+##### Main dict: set of Frequency analysis (one for each item)
 ##### Subdict: Analysis setting - 'Group': groups to analyse - (list of lists)
 #####                                                          Main list: set of groups
 #####                                                          Sublist: group ([0] - Group name; [1] - stripe index)
@@ -351,25 +450,30 @@ analysis_params['Vcorr'] = {
 #####                             'Stop': stop time (in ms)
 #####                             'Minimum spike number': minimum number of spikes in the selected neurons
 #####                             'Maximum spike number': maximum number of spikes in the selected neurons
+#####                             'Filtering': type of filtering ('Gaussian', 'Moving average'); False if none
+#####                             'Filtering parameter': averaging window for moving average; sigma for gaussian filter
+#####                             'Graphs': True if graphs are to be generated; False otherwise
 
-
-
+    
 ##### Output
 ##### Imonitort_list elements: lists of time points 
 ##### I_list elements: lists of I values
-##### LFPfrequence_list: lists of frequence values
+##### LFPfrequency_list: lists of frequency values
 ##### LFPpower_list: lists of the corresponding power values
 
-analysis_params['Frequence'] = {
+analysis_params['Frequency'] = {
                                 'Analysis 1':{'Group': [['all', 0,],], #--> to LFP
                                                         'Source': 'I_tot',
-                                                        'Start': start,
+                                                        'Start': 1000,
                                                         'Stop': stop,
                                                         'Minimum spike number': 0,
                                                         'Maximum spike number': 100000,
+                                                        'Filtering': 'Gaussian',
+                                                        'Filtering parameter': 11,
+                                                        'Graphs': True,
                                                         },                             
                                   }
-               
+
                   
 ############### Populational rate ###############
 
@@ -383,19 +487,6 @@ analysis_params['Frequence'] = {
 #####                             'Source': current component to analyse (i.e. I_tot; I_GABA; I_NMDA; I_AMPA; I_EXC; I_inj)
 #####                             'Time bins': size of time bins (in ms)
 
-
-
-                                
-analysis_params['Populational rate'] = {
-                                           # 'Analysis 0': {'Group': [['all', 0],],
-                                           #               'Start': start,
-                                           #               'Stop': stop,
-                                           #               'Time bin': 1,
-                                           #               'Moving average': 31,
-                                           #               },
-
-                                          }
-
 ##### Output
 ##### Figure Pop_rate_{}.png
 
@@ -403,47 +494,58 @@ analysis_params['Populational rate'] = {
 ##### popratecount_lists elements: lists of the corresponding spike counts
 ##### popratefreq_lists elements: lists of the corresponding spike counts
 
-############### Rate distribution ###############
 
-##### Proportion of neurons spiking in each frequence band (defined in 'Bins')
+                                
+analysis_params['Populational rate'] = {
+                                            # 'Analysis 0': {'Group': [['IN_L', 0],],
+                                            #               'Start': start,
+                                            #               'Stop': stop,
+                                            #               'Time bin': 1,
+                                            #               'Moving average': 31,
+                                            #               },
+                                            # 'Analysis 1': {'Group': [['PC', 0],],
+                                            #               'Start': start,
+                                            #               'Stop': stop,
+                                            #               'Time bin': 1,
+                                            #               'Moving average': 31,
+                                            #               },
+
+                                          }
+
+############### Rate stratification ###############
+
+##### Proportion of neurons spiking in each frequency band (defined in 'Bins')
 
 ##### Dicts of dicts
-##### Main dict: set of Frequence analysis (one for each item)
+##### Main dict: set of Frequency analysis (one for each item)
 ##### Subdict: Analysis setting - 'Group': groups to analyse - (list of lists)
-#####                                                          Main list: set of groups
-#####                                                          Sublist: group ([0] - Group name; [1] - stripe index)
+#####                                                           Main list: set of g#####roups
+#####                                                           Sublist: group ([0] - Group name; [1] - stripe index)
 #####                             'Start': start time (in ms)
 #####                             'Stop': stop time (in ms)
-#####                             'Bins': list of partitioning values of the frequence bands
+#####                             'Bins': list of partitioning values of the frequency bands
 
+#### Output
+#### File: Report_{}_{}.txt
+#### ratestratification_total_list elements: total number of cells
+#### ratestratification_count_list elements: number of cells in each frequency band
+#### ratestratification_neuron_list: neuron indices in each frequency band
 
-analysis_params['Rate distribution'] = {
-                                              # 'Analysis 0': {'Group': [['all', 0],],
-                                              #                 'Start': start,
-                                              #                 'Stop':stop,
-                                              #                 'Bins': [1/3,],
-                                              #                 },
-                                              # 'Analysis 1': {'Group': [['PC_L23', 0],],
-                                              #                 'Start': start,
-                                              #                 'Stop':stop,
-                                              #                 'Bins': [1/3,],
-                                              #                 },  
-                                              # 'Analysis 2': {'Group': [['PC_L5', 0],],
-                                              #                 'Start': start,
-                                              #                 'Stop':stop,
-                                              #                 'Bins': [1/3,],
-                                              #                 },  
-                                              # 'Analysis 3': {'Group': [['PC', 0],],
-                                              #                 'Start': start,
-                                              #                 'Stop':stop,
-                                              #                 'Bins': [1/3,],
-                                              #                 },  
+analysis_params['Rate stratification'] = {
+                                                # 'Analysis 0': {'Group': [['all', 0],],
+                                                #                 'Start': start,
+                                                #                 'Stop':stop,
+                                                #                 'Bins': [1/3,],
+                                                #                 },  
+                                                # 'Analysis 1': {'Group': [['PC', 0],],
+                                                #                 'Start': start,
+                                                #                 'Stop':stop,
+                                                #                 'Bins': [1/3,],
+                                                #                 },  
                                           
                                           }
 
-##### Output
-##### File: Report_{}_{}.txt
-               
+             
 ################==============================###################
 ################===== Information saving =====###################
 ################==============================###################
@@ -481,8 +583,8 @@ else:       ##### Generate new parameters
     else:
         print('\n')
 
-cortex = CortexNetwork(NeuPar, V0, STypPar,SynPar,SPMtx, group_distr, constant_current, fluctuating_current, scales2, 
-                        control_param['Method'], control_param['Time step'], control_param['seed'])
+cortex = CortexNetwork(NeuPar, V0, STypPar,SynPar,SPMtx, group_distr, constant_current, fluctuating_current, scales2, noise,
+                        control_param['Method'], control_param['Time step'], control_param['seed'], simulation_dir)
 
 if type(control_param['seed']) is not bool:
     print('REPORT: Seed set to {}\n'.format(control_param['seed']))
@@ -521,6 +623,10 @@ if control_param['run']:
     print("REPORT: Preparing simulation")
     print('Time step: {} ms'.format(control_param['Time step']))
     print('Duration: {} ms'.format(control_param['Duration']))
+    if type(control_param['Noise']) is int or type(control_param['Noise']) is float:
+        print('Noise (D): {} '.format(control_param['Noise']))
+    else:
+        print('Noise (D): no noise')
     print('Integration method:', control_param['Method'], end='\n\n')
     
     run_time = time()
@@ -537,77 +643,52 @@ if control_param['run']:
 
     ###############----------||| Analysis |||----------###############
     
-    if len(analysis_params['ISI'].values()) + len(analysis_params['V'].values()) + len(analysis_params['Frequence'].values()) + len(analysis_params['Populational rate'].values()) + len(analysis_params['Rate distribution'].values()) + len(analysis_params['DAcorrelation'].values()) :
+    if len(analysis_params['ISI analysis'].values()) + len(analysis_params['ISI autocorrelation1'].values()) + len(analysis_params['ISI crosscorrelation1'].values()) + len(analysis_params['ISI correlation2'].values()) + len(analysis_params['ISI Pearson'].values()) + len(analysis_params['V analysis'].values()) + len(analysis_params['V correlation'].values()) + len(analysis_params['Frequency'].values()) + len(analysis_params['Populational rate'].values()) + len(analysis_params['Rate stratification'].values()):
         print('REPORT: Performing analysis')
         
-        if len(analysis_params['ISI'].values()):
-            spiketime_list, zerolagCC_list, ISImean_list, ISIstd_list, ISICV_list, binned_spiketimes, return_expecvalue_list, return_var_list, autocorrvalue_list, autocorrt_list = cortex.ISI_analysis(analysis_params['ISI'].values(), simulation_dir)           
+        if len(analysis_params['ISI analysis'].values()):
+            ISImean_list, ISIstd_list, ISICV_list = cortex.ISI_analysis(analysis_params['ISI analysis'].values())           
         
-        if len(analysis_params['DAcorrelation'].values()):
-            DAzerolagCC_list, DAautocorrvalue_list, DAautocorrt_list = cortex.DAcorrelation_analysis(analysis_params['DAcorrelation'].values(), simulation_dir)
+        if len(analysis_params['ISI autocorrelation1'].values()):
+            autocorrvalue_list, autocorrt_list = cortex.ISI_autocorrelation1(analysis_params['ISI autocorrelation1'].values())           
         
-        if len(analysis_params['V'].values()):
-            Vmean_list, Vstd_list, Vsubthres_list = cortex.V_analysis(analysis_params['V'].values(), simulation_dir)
+        if len(analysis_params['ISI crosscorrelation1'].values()):
+            zerolagCC_list  = cortex.ISI_crosscorrelation1(analysis_params['ISI crosscorrelation1'].values())           
         
-        if len(analysis_params['Vcorr'].values()):
-            monitor_t,Vindividualstd_list, Vindividualmean_list, Vgroup_list, VzerolagCC_list, VnormalizedzerolagCC_list = cortex.Vcorr_analysis(analysis_params['Vcorr'].values(), simulation_dir)
+        if len(analysis_params['ISI correlation2'].values()):
+            DAzerolagCC_list, DAautocorrvalue_list, DAautocorrt_list = cortex.DAcorrelation_analysis(analysis_params['ISI correlation2'].values())
         
-        if len(analysis_params['Frequence'].values()):
-            Imonitort_list, I_list, LFPfrequence_list, LFPpower_list, MALFPfrequence_list, MALFPpower_list = cortex.frequence_spectrum(analysis_params['Frequence'].values(), simulation_dir)
+        if len(analysis_params['ISI Pearson'].values()):
+            lag_array_list, correlation_mean_list = cortex.Pearson_correlation(analysis_params['ISI Pearson'].values())
+        
+        if len(analysis_params['V analysis'].values()):
+            Vmean_list, Vstd_list, Vsubthres_list = cortex.V_analysis(analysis_params['V analysis'].values())
+        
+        if len(analysis_params['V correlation'].values()):
+            monitor_t,Vindividualstd_list, Vindividualmean_list, Vgroup_list, VzerolagCC_list, VnormalizedzerolagCC_list = cortex.Vcorr_analysis(analysis_params['V correlation'].values())
+        
+        if len(analysis_params['Frequency'].values()):
+            Imonitort_list, I_list, LFPfrequency_list, LFPpower_list, MALFPfrequency_list, MALFPpower_list = cortex.frequency_analysis(analysis_params['Frequency'].values())
             
         if len(analysis_params['Populational rate'].values()):
-            popratet_lists, popratecount_lists, popratefreq_lists = cortex.population_rate(analysis_params['Populational rate'].values(), simulation_dir)
+            popratet_lists, popratecount_lists, popratefreq_lists = cortex.population_rate(analysis_params['Populational rate'].values())
             
-        if len(analysis_params['Rate distribution'].values()):
-            ratedistribution_total_list, ratedistribution_count_list, ratedistribution_neuron_list= cortex.rate_distribution(analysis_params['Rate distribution'].values(), simulation_dir)
+        if len(analysis_params['Rate stratification'].values()):
+            ratestratification_total_list, ratestratification_count_list, ratestratification_neuron_list = cortex.rate_stratification(analysis_params['Rate stratification'].values())
         
         print('REPORT: Analysis concluded\n')
     
     
     ###############----------||| Raster plot |||----------###############
-    cortex.raster_plot(simulation_dir, tlims=[max(0, control_param['Duration']-4000), control_param['Duration']])
-    cortex.raster_plot(simulation_dir, tlims=[max(0, control_param['Duration']-1000), control_param['Duration']])
-    cortex.raster_plot(simulation_dir, tlims=[max(0, control_param['Duration']-500), control_param['Duration']])
-
+    
+    cortex.raster_plot(tlims=[max(0, control_param['Duration']-6000), control_param['Duration']], in_s=True)
+    # cortex.raster_plot(tlims=[max(0, control_param['Duration']-1000), control_param['Duration']])
+    # cortex.raster_plot(tlims=[max(0, control_param['Duration']-500), control_param['Duration']])
     
 ###############----------||| Parameters summary |||----------###############
-GroupSetup = [[['all', 0]], [['PC_L23',0]],[['PC_L5',0]], [['PC',0]],
-              ]
-cortex.groups_params(GroupSetup, simulation_dir)
 
-cortex.neuron_params([ratedistribution_neuron_list[0][0]], simulation_dir)
-cortex.neuron_params([ratedistribution_neuron_list[0][1]], simulation_dir)
-cortex.neuron_params([ratedistribution_neuron_list[1][0]], simulation_dir)
-cortex.neuron_params([ratedistribution_neuron_list[1][1]], simulation_dir)
-cortex.neuron_params([ratedistribution_neuron_list[2][0]], simulation_dir)
-cortex.neuron_params([ratedistribution_neuron_list[2][1]], simulation_dir)
-cortex.neuron_params([ratedistribution_neuron_list[3][0]], simulation_dir)
-cortex.neuron_params([ratedistribution_neuron_list[3][1]], simulation_dir)
-
-cortex.neuron_mw_test(ratedistribution_neuron_list[0][0],ratedistribution_neuron_list[0][1], simulation_dir)
-cortex.neuron_mw_test(ratedistribution_neuron_list[1][0],ratedistribution_neuron_list[1][1], simulation_dir)
-cortex.neuron_mw_test(ratedistribution_neuron_list[2][0],ratedistribution_neuron_list[2][1], simulation_dir)
-cortex.neuron_mw_test(ratedistribution_neuron_list[3][0],ratedistribution_neuron_list[3][1], simulation_dir)
-
-cortex.synapses_mw_test(ratedistribution_neuron_list[0][0],ratedistribution_neuron_list[0][1], simulation_dir)
-cortex.synapses_mw_test(ratedistribution_neuron_list[1][0],ratedistribution_neuron_list[1][1], simulation_dir)
-cortex.synapses_mw_test(ratedistribution_neuron_list[2][0],ratedistribution_neuron_list[2][1], simulation_dir)
-cortex.synapses_mw_test(ratedistribution_neuron_list[3][0],ratedistribution_neuron_list[3][1], simulation_dir)
+# GroupSetup = [[['all', 0]],
+#               ]
+# cortex.groups_params(GroupSetup, simulation_dir)
 
 
-
-cortex.connection_chi(ratedistribution_neuron_list[0][0],ratedistribution_neuron_list[0][1], simulation_dir)
-cortex.connection_chi(ratedistribution_neuron_list[0][0],ratedistribution_neuron_list[0][1], simulation_dir, synapses_type='inhibitory')
-cortex.connection_chi(ratedistribution_neuron_list[0][0],ratedistribution_neuron_list[0][1], simulation_dir, synapses_type='excitatory')
-
-cortex.connection_chi(ratedistribution_neuron_list[1][0],ratedistribution_neuron_list[1][1], simulation_dir)
-cortex.connection_chi(ratedistribution_neuron_list[1][0],ratedistribution_neuron_list[1][1], simulation_dir, synapses_type='inhibitory')
-cortex.connection_chi(ratedistribution_neuron_list[1][0],ratedistribution_neuron_list[1][1], simulation_dir, synapses_type='excitatory')
-
-cortex.connection_chi(ratedistribution_neuron_list[2][0],ratedistribution_neuron_list[2][1], simulation_dir)
-cortex.connection_chi(ratedistribution_neuron_list[2][0],ratedistribution_neuron_list[2][1], simulation_dir, synapses_type='inhibitory')
-cortex.connection_chi(ratedistribution_neuron_list[2][0],ratedistribution_neuron_list[2][1], simulation_dir, synapses_type='excitatory')
-
-cortex.connection_chi(ratedistribution_neuron_list[3][0],ratedistribution_neuron_list[3][1], simulation_dir)
-cortex.connection_chi(ratedistribution_neuron_list[3][0],ratedistribution_neuron_list[3][1], simulation_dir, synapses_type='inhibitory')
-cortex.connection_chi(ratedistribution_neuron_list[3][0],ratedistribution_neuron_list[3][1], simulation_dir, synapses_type='excitatory')
