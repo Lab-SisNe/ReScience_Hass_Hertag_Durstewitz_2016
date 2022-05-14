@@ -3,8 +3,7 @@ from SimulationSetup import *
 from NetworkSetup import NetworkSetup
 from time import time   
 from warnings import filterwarnings
-from SynchronyMeasures import *
-from PearsonCorrelation import *
+
 
 ##### Setting simulation directory (as 'simulation_{}', with {} being the lowest integer corresponding to non-existing directory)
 
@@ -248,16 +247,9 @@ stop = control_param['Duration']
 #####                             'Minimum spike number': minimum number of spikes in the selected neurons
 
 ##### Output:
-##### spiketime_list elements: list of spike times
-##### zerolagCC_list elements: list of the pairwise zero-lag crosscorrelation between the analysed neurons
 ##### ISImean_list elements: list of the ISI means for each analysed neuronc
 ##### ISIstd_list elements: list of the ISI std for each analysed neuron
 ##### ISICV_list elements: list of the ISI std for each analysed neuron
-##### binned_spiketimes_list elements: 2d-array with time bins in each row (0: bin with no spike; 1: bin with spike)
-##### return_expecvalue_list elements: list of binned spiking expected value for each neuron (# spikes / # bins)
-##### return_var_list elements: list of binned spiking variance for each neuron
-##### autocorrvalue_list elements: 2d array with autocorrelation for each neuron in the rows
-##### autocorrt_list elements: list of time values used in autocorrelation
 
 analysis_params['ISI analysis'] = {
                             # 'Analysis 0': {'Group': [['all',0],],
@@ -272,7 +264,7 @@ analysis_params['ISI analysis'] = {
 ############### ISI autocorrelation1 ###############
 
 ##### Dicts of dicts
-##### Main dict: set of ISI analysis (one for each item)
+##### Main dict: set of ISI autocorrelation analysis (one for each item)
 ##### Subdict: Analysis setting - 'Group': groups to analyse - (list of lists)
 #####                                                          Main list: set of groups
 #####                                                          Sublist: group ([0] - Group name; [1] - stripe index)
@@ -280,16 +272,9 @@ analysis_params['ISI analysis'] = {
 #####                             'Stop': stop time (in ms)
 #####                             'Time bin': size of Time bin (in ms)
 #####                             'Minimum spike number': minimum number of spikes in the selected neurons
+#####                             'Graphs': True if graphs are to be generated; False otherwise
 
 ##### Output:
-##### spiketime_list elements: list of spike times
-##### zerolagCC_list elements: list of the pairwise zero-lag crosscorrelation between the analysed neurons
-##### ISImean_list elements: list of the ISI means for each analysed neuronc
-##### ISIstd_list elements: list of the ISI std for each analysed neuron
-##### ISICV_list elements: list of the ISI std for each analysed neuron
-##### binned_spiketimes_list elements: 2d-array with time bins in each row (0: bin with no spike; 1: bin with spike)
-##### return_expecvalue_list elements: list of binned spiking expected value for each neuron (# spikes / # bins)
-##### return_var_list elements: list of binned spiking variance for each neuron
 ##### autocorrvalue_list elements: 2d array with autocorrelation for each neuron in the rows
 ##### autocorrt_list elements: list of time values used in autocorrelation
 
@@ -306,7 +291,7 @@ analysis_params['ISI autocorrelation1'] = {
 ############### ISI crosscorrelation1 ###############
 
 ##### Dicts of dicts
-##### Main dict: set of ISI analysis (one for each item)
+##### Main dict: set of ISI crosscorrelation analysis (one for each item)
 ##### Subdict: Analysis setting - 'Group': groups to analyse - (list of lists)
 #####                                                          Main list: set of groups
 #####                                                          Sublist: group ([0] - Group name; [1] - stripe index)
@@ -314,18 +299,10 @@ analysis_params['ISI autocorrelation1'] = {
 #####                             'Stop': stop time (in ms)
 #####                             'Time bin': size of Time bin (in ms)
 #####                             'Minimum spike number': minimum number of spikes in the selected neurons
+#####                             'Graphs': True if graphs are to be generated; False otherwise
 
 ##### Output:
-##### spiketime_list elements: list of spike times
 ##### zerolagCC_list elements: list of the pairwise zero-lag crosscorrelation between the analysed neurons
-##### ISImean_list elements: list of the ISI means for each analysed neuronc
-##### ISIstd_list elements: list of the ISI std for each analysed neuron
-##### ISICV_list elements: list of the ISI std for each analysed neuron
-##### binned_spiketimes_list elements: 2d-array with time bins in each row (0: bin with no spike; 1: bin with spike)
-##### return_expecvalue_list elements: list of binned spiking expected value for each neuron (# spikes / # bins)
-##### return_var_list elements: list of binned spiking variance for each neuron
-##### autocorrvalue_list elements: 2d array with autocorrelation for each neuron in the rows
-##### autocorrt_list elements: list of time values used in autocorrelation
 
 analysis_params['ISI crosscorrelation1'] = {
                             # 'Analysis 0': {'Group': [['all',0],],
@@ -341,7 +318,7 @@ analysis_params['ISI crosscorrelation1'] = {
 ############### ISI correlation2 #############################
 
 ##### Dicts of dicts
-##### Main dict: set of ISI analysis (one for each item)
+##### Main dict: set of ISI correlation analysis (one for each item) - with a second formula
 ##### Subdict: Analysis setting - 'Group': groups to analyse - (list of lists)
 #####                                                          Main list: set of groups
 #####                                                          Sublist: group ([0] - Group name; [1] - stripe index)
@@ -349,11 +326,12 @@ analysis_params['ISI crosscorrelation1'] = {
 #####                             'Stop': stop time (in ms)
 #####                             'Time bin': size of time bins (in ms)
 #####                             'Minimum spike number': minimum number of spikes in the selected neurons
+#####                             'Graphs': True if graphs are to be generated; False otherwise
 
 ##### Output:
-##### zerolagCC_list elements: list of the pairwise zero-lag crosscorrelation between the analysed neurons
-##### autocorrvalue_list elements: 2d array with autocorrelation for each neuron in the rows
-##### autocorrt_list elements: list of time values used in autocorrelation
+##### DAzerolagCC_list elements: list of the pairwise zero-lag crosscorrelation between the analysed neurons
+##### DAautocorrvalue_list elements: 2d array with autocorrelation for each neuron in the rows
+##### DAautocorrt_list elements: list of time values used in autocorrelation
 
 analysis_params['ISI correlation2'] = {
                                 # 'Analysis 0': {'Group': [['all',0],],
@@ -366,7 +344,25 @@ analysis_params['ISI correlation2'] = {
                                     }
 
 ############### ISI Pearson correlation ###############
-            
+  
+##### Dicts of dicts
+##### Main dict: set of ISI Pearson cross correlation analysis (one for each item) - with a second formula
+##### Subdict: Analysis setting - 'Group': groups to analyse - (list of lists)
+#####                                                          Main list: set of groups
+#####                                                          Sublist: group ([0] - Group name; [1] - stripe index)
+#####                             'Start': start time (in ms)
+#####                             'Stop': stop time (in ms)
+#####                             'Time bin': size of time bins (in ms)
+#####                             'Minimum spike number': minimum number of spikes in the selected neurons
+#####                             'Minimum lag': minimum lag for cross-correlation analysis
+#####                             'Maximum lag': maximum lag for cross-correlation analysis
+#####                             'Graphs': True if graphs are to be generated; False otherwise
+ 
+##### Output:
+##### lag_array_list elements: list of correlation lags
+##### correlation_mean_list elements: list of corresponding correlation values
+
+         
 analysis_params['ISI Pearson'] = {
                             # 'Analysis 0': {'Group': [['all',0],],
                             #               'Start': start,
@@ -379,17 +375,24 @@ analysis_params['ISI Pearson'] = {
                                           # },
                             }
 
+
+
 ############### V analysis ###############
 
 ##### Dicts of dicts
-##### Main dict: set of V analysis (one for each item)
+##### Main dict: set of V analysis  (one for each item)
 ##### Subdict: Analysis setting - 'Group': groups to analyse - (list of lists)
 #####                                                          Main list: set of groups
 #####                                                          Sublist: group ([0] - Group name; [1] - stripe index)
 #####                             'Start': start time (in ms)
 #####                             'Stop': stop time (in ms)
 #####                             'Minimum spike number': minimum number of spikes in the selected neurons
+#####                             'Graphs': True if graphs are to be generated; False otherwise
 
+##### Output:
+##### Vmean_list elements: list of individual V mean
+##### Vstd_list elements: list of individual V std
+##### Vsubthres_list elements: list of individual V_T - V mean
 
 analysis_params['V analysis'] = {
                         # 'Analysis 1': {'Group': [['all', 0,],],
@@ -401,23 +404,27 @@ analysis_params['V analysis'] = {
 
                             }
 
-
-##### Output:
-##### Vmean_list elements: list of individual V mean
-##### Vstd_list elements: list of individual V std
-##### Vsubthres_list elements: list of individual V_T - V mean
     
 
-############### Vcorr analysis ###############
+############### V correlation analysis ###############
 
 ##### Dicts of dicts
-##### Main dict: set of V analysis (one for each item)
+##### Main dict: set of V correlation analysis (one for each item)
 ##### Subdict: Analysis setting - 'Group': groups to analyse - (list of lists)
 #####                                                          Main list: set of groups
 #####                                                          Sublist: group ([0] - Group name; [1] - stripe index)
 #####                             'Start': start time (in ms)
 #####                             'Stop': stop time (in ms)
 #####                             'Minimum spike number': minimum number of spikes in the selected neurons
+#####                             'Graphs': True if graphs are to be generated; False otherwise
+
+##### Output:
+##### monitor_t: list of time points
+##### Vindividualstd_list elements: lists of std of individual V traces
+##### Vindividualmean_list elements: lists of mean of individual V traces
+##### Vgroup_list elements: collective V traces (as mean of inidividual traces at each time point) 
+##### VzerolagCC_list elements: lists of pairwise zero-lag cross-correlation between V traces (without normalization)
+##### VnormalizedzerolagCC_list: lists of pairwise zero-lag cross-correlation between V traces (normalized by stds )
 
 
 analysis_params['V correlation'] = {
@@ -430,13 +437,6 @@ analysis_params['V correlation'] = {
 
                             }
 
-##### Output:
-##### monitor_t: list of time points
-##### Vindividualstd_list elements: lists of std of individual V traces
-##### Vindividualmean_list elements: lists of mean of individual V traces
-##### Vgroup_list elements: collective V traces (as mean of inidividual traces at each time point) 
-##### VzerolagCC_list elements: lists of pairwise zero-lag cross-correlation between V traces (without normalization)
-##### VnormalizedzerolagCC_list: lists of pairwise zero-lag cross-correlation between V traces (normalized by stds )
 
 ############### Frequency analysis ###############
 
@@ -454,7 +454,9 @@ analysis_params['V correlation'] = {
 #####                             'Stop': stop time (in ms)
 #####                             'Minimum spike number': minimum number of spikes in the selected neurons
 #####                             'Maximum spike number': maximum number of spikes in the selected neurons
-
+#####                             'Filtering': type of filtering ('Gaussian', 'Moving average'); False if none
+#####                             'Filtering parameter': averaging window for moving average; sigma for gaussian filter
+#####                             'Graphs': True if graphs are to be generated; False otherwise
 
     
 ##### Output
@@ -517,7 +519,7 @@ analysis_params['Populational rate'] = {
 ##### popratecount_lists elements: lists of the corresponding spike counts
 ##### popratefreq_lists elements: lists of the corresponding spike counts
 
-############### Rate distribution ###############
+############### Rate stratification ###############
 
 ##### Proportion of neurons spiking in each frequency band (defined in 'Bins')
 
@@ -530,6 +532,12 @@ analysis_params['Populational rate'] = {
 #####                             'Stop': stop time (in ms)
 #####                             'Bins': list of partitioning values of the frequency bands
 
+#### Output
+#### File: Report_{}_{}.txt
+#### ratestratification_total_list elements: total number of cells
+#### ratestratification_count_list elements: number of cells in each frequency band
+#### ratestratification_neuron_list: neuron indices in each frequency band
+ 
 
 analysis_params['Rate stratification'] = {
                                                 'Analysis 0': {'Group': [['all', 0],],
@@ -544,13 +552,7 @@ analysis_params['Rate stratification'] = {
                                                                 },  
                                           
                                           }
-
-#### Output
-#### File: Report_{}_{}.txt
-#### ratedistribution_total_list elements: total number of cells
-#### ratedistribution_count_list elements: number of cells in each frequency band
-#### ratestratification_neuron_list: neuron indices in each frequency band
-               
+              
 ################==============================###################
 ################===== Information saving =====###################
 ################==============================###################
@@ -674,7 +676,7 @@ if control_param['run']:
             monitor_t,Vindividualstd_list, Vindividualmean_list, Vgroup_list, VzerolagCC_list, VnormalizedzerolagCC_list = cortex.Vcorr_analysis(analysis_params['V correlation'].values())
         
         if len(analysis_params['Frequency'].values()):
-            Imonitort_list, I_list, LFPfrequency_list, LFPpower_list, MALFPfrequency_list, MALFPpower_list = cortex.frequency_analysis(analysis_params['Frequency'].values())
+            Imonitort_list, I_list, LFPfrequency_list, LFPpower_list, filtered_LFPfrequency_list, filtered_LFPpower_list = cortex.frequency_analysis(analysis_params['Frequency'].values())
             
         if len(analysis_params['Populational rate'].values()):
             popratet_lists, popratecount_lists, popratefreq_lists = cortex.population_rate(analysis_params['Populational rate'].values())
