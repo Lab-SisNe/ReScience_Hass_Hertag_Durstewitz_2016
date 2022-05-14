@@ -26,7 +26,7 @@ simulation_dir = set_dir()
 
 #####----------||| Simulation control ||||----------#####
 
-control_param = {'Duration': 4000, # in ms
+control_param = {'Duration': 61000, # in ms
                  'Time step': 0.05, # in ms
                  'Noise': False, # D if noise present (int or float); anything else otherwise
                  'Method': 'rk4', # brian2 integration methods
@@ -255,7 +255,7 @@ analysis_params['ISI analysis'] = {
                             'Analysis 0': {'Group': [['all',0],],
                                           'Start': start,
                                           'Stop': stop,
-                                          'Minimum spike number': 11,
+                                          'Minimum spike number': 21,
                                           'Graphs': False,
                                            },
                             }
@@ -283,7 +283,7 @@ analysis_params['ISI autocorrelation1'] = {
                                           'Start': start,
                                           'Stop': stop,
                                           'Time bin': 2,
-                                          'Minimum spike number': 11,
+                                          'Minimum spike number': 21,
                                           'Graphs': False,
                                           },
                             }
@@ -305,13 +305,13 @@ analysis_params['ISI autocorrelation1'] = {
 ##### zerolagCC_list elements: list of the pairwise zero-lag crosscorrelation between the analysed neurons
 
 analysis_params['ISI crosscorrelation1'] = {
-                            # 'Analysis 0': {'Group': [['all',0],],
-                            #               'Start': start,
-                            #               'Stop': stop,
-                            #               'Time bin': 2,
-                            #               'Minimum spike number': 11,
-                            #               'Graphs': False,
-                            #               },
+                            'Analysis 0': {'Group': [['all',0],],
+                                          'Start': start,
+                                          'Stop': stop,
+                                          'Time bin': 2,
+                                          'Minimum spike number': 21,
+                                          'Graphs': False,
+                                          },
                             }
 
 ############### ISI correlation2 #############################
@@ -367,7 +367,7 @@ analysis_params['ISI Pearson'] = {
                                           'Start': start,
                                           'Stop': stop,
                                           'Time bin': 2,
-                                          'Minimum spike number': 3,
+                                          'Minimum spike number': 21,
                                           'Minimum lag': -30,
                                           'Maximum lag': 30,
                                           'Graphs': False,

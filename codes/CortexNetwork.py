@@ -2900,9 +2900,9 @@ class CortexNetwork():
         
         sim_dir = self.sim_dir
         
-        print('REPORT: Starting ISI correlation1\n')
-        if not os.path.isdir('{}/ISI_correlation1'.format(sim_dir)):
-            os.mkdir('{}/ISI_correlation1'.format(sim_dir))      
+        print('REPORT: Starting ISI autocorrelation1\n')
+        if not os.path.isdir('{}/ISI_autocorrelation1'.format(sim_dir)):
+            os.mkdir('{}/ISI_autocorrelation1'.format(sim_dir))      
        
         autocorrvalue_list = []
         autocorrt_list = []
@@ -2913,11 +2913,11 @@ class CortexNetwork():
             
             curr_idc = 0
             
-            ISI_file = '{}/ISI_correlation1/Report_{}_{}.txt'.format(sim_dir, curr_idc, sim_dir)
+            ISI_file = '{}/ISI_autocorrelation1/Report_{}_{}.txt'.format(sim_dir, curr_idc, sim_dir)
             
             while os.path.isfile(ISI_file):
                 curr_idc+= 1
-                ISI_file = '{}/ISI_correlation1/Report_{}_{}.txt'.format(sim_dir, curr_idc, sim_dir)
+                ISI_file = '{}/ISI_autocorrelation1/Report_{}_{}.txt'.format(sim_dir, curr_idc, sim_dir)
              
             print('Analysis {}'.format(curr_idc))
             
@@ -3010,7 +3010,7 @@ class CortexNetwork():
                     ax.plot(auto_t[:len(auto_t)//2], meanautoC[:len(auto_t)//2])
                     ax.set_xlabel('Lag (ms)')
                     ax.set_ylabel('Autocorrelation')
-                    fig.savefig('{}/ISI_correlation1/meanautoCtrace_{}.png'.format(sim_dir, curr_idc))
+                    fig.savefig('{}/ISI_autocorrelation1/meanautoCtrace_{}.png'.format(sim_dir, curr_idc))
                     
                     auto_t = np.asarray(auto_t) 
                     t100ms = auto_t[auto_t<100]
@@ -3019,21 +3019,21 @@ class CortexNetwork():
                     ax.plot(auto_t[t100ms], meanautoC[t100ms])
                     ax.set_xlabel('Lag (ms)')
                     ax.set_ylabel('Autocorrelation')
-                    fig.savefig('{}/ISI_correlation1/meanautoCtrace0_300ms_{}.png'.format(sim_dir, curr_idc))
+                    fig.savefig('{}/ISI_autocorrelation1/meanautoCtrace0_300ms_{}.png'.format(sim_dir, curr_idc))
         
                     t2_100ms = np.where((auto_t>=2) & (auto_t<300))[0]
                     fig, ax = subplots()
                     ax.plot(auto_t[t2_100ms], meanautoC[t2_100ms])
                     ax.set_xlabel('Lag (ms)')
                     ax.set_ylabel('Autocorrelation')
-                    fig.savefig('{}/ISI_correlation1/meanautoCtrace2_300ms_{}.png'.format(sim_dir, curr_idc))
+                    fig.savefig('{}/ISI_autocorrelation1/meanautoCtrace2_300ms_{}.png'.format(sim_dir, curr_idc))
                     
                     t10_1000ms = np.where((auto_t>=2) & (auto_t<1000))[0]
                     fig, ax = subplots()
                     ax.plot(auto_t[t10_1000ms], meanautoC[t10_1000ms])
                     ax.set_xlabel('Lag (ms)')
                     ax.set_ylabel('Autocorrelation')
-                    fig.savefig('{}/ISI_correlation1/meanautoCtrace2_1000ms_{}.png'.format(sim_dir, curr_idc))
+                    fig.savefig('{}/ISI_autocorrelation1/meanautoCtrace2_1000ms_{}.png'.format(sim_dir, curr_idc))
                 
 
             
@@ -3055,9 +3055,9 @@ class CortexNetwork():
         
         sim_dir = self.sim_dir
         
-        print('REPORT: Starting ISI correlation1\n')
-        if not os.path.isdir('{}/ISI_correlation1'.format(sim_dir)):
-            os.mkdir('{}/ISI_correlation1'.format(sim_dir))      
+        print('REPORT: Starting ISI crosscorrelation1\n')
+        if not os.path.isdir('{}/ISI_crosscorrelation1'.format(sim_dir)):
+            os.mkdir('{}/ISI_crosscorrelation1'.format(sim_dir))      
        
         zerolagCC_list = []
 
@@ -3068,11 +3068,11 @@ class CortexNetwork():
             
             curr_idc = 0
             
-            ISI_file = '{}/ISI_correlation1/Report_{}_{}.txt'.format(sim_dir, curr_idc, sim_dir)
+            ISI_file = '{}/ISI_crosscorrelation1/Report_{}_{}.txt'.format(sim_dir, curr_idc, sim_dir)
             
             while os.path.isfile(ISI_file):
                 curr_idc+= 1
-                ISI_file = '{}/ISI_correlation1/Report_{}_{}.txt'.format(sim_dir, curr_idc, sim_dir)
+                ISI_file = '{}/ISI_crosscorrelation1/Report_{}_{}.txt'.format(sim_dir, curr_idc, sim_dir)
              
             print('Analysis {}'.format(curr_idc))
             
@@ -3143,7 +3143,14 @@ class CortexNetwork():
                 print('Cross-correlation concluded\n')
                 
                 zerolagCC_list.append(cov_arr)
-              
+                
+                with open(ISI_file, 'a') as f:
+                    print('Analysis:', analysand,end='\n\n', file=f)
+                    
+                    print('Spiking neurons (n spikes >= {}):'.format(min_sp_num), len(neurons_idc), end='\n\n', file=f)
+                      
+                    print('CC(0) mean:', np.mean(cov_arr), file=f)
+                    print('CC(0) std:', np.std(cov_arr), end='\n\n', file=f)
             
                 
                 if all_graphs:
@@ -3156,33 +3163,33 @@ class CortexNetwork():
                     ax.hist(cov_arr, bins=int(round(np.sqrt(len(cov_arr)), 0)))
                     ax.set_xlabel('Zero-lag cross-correlation')
                     ax.set_ylabel('Number of pairs')
-                    fig.savefig('{}/ISI_correlation1/autocorhist_{}.png'.format(sim_dir, curr_idc))
+                    fig.savefig('{}/ISI_crosscorrelation1/autocorhist_{}.png'.format(sim_dir, curr_idc))
                     
                     fig, ax = subplots()
                     ax.hist(cov_arr, bins=bins_lims, density=True)
                     ax.set_xlabel('Zero-lag cross-correlation')
                     ax.set_ylabel('Density')
-                    fig.savefig('{}/ISI_correlation1/autocorhistdens_{}.png'.format(sim_dir, curr_idc))
+                    fig.savefig('{}/ISI_crosscorrelation1/autocorhistdens_{}.png'.format(sim_dir, curr_idc))
                     
                     fig, ax = subplots()
                     ax.plot(dens_lims, dens_arr)
                     ax.set_xlabel('Zero-lag cross-correlation')
                     ax.set_ylabel('Density')
-                    fig.savefig('{}/ISI_correlation1/autocorhistplot_{}.png'.format(sim_dir, curr_idc))
+                    fig.savefig('{}/ISI_crosscorrelation1/autocorhistplot_{}.png'.format(sim_dir, curr_idc))
                     
                     fig, ax = subplots()
                     ax.plot(dens_lims, dens_arr)
                     ax.set_xlabel('Zero-lag cross-correlation')
                     ax.set_ylabel('Density')
                     ax.set_xlim(np.mean(cov_arr) - 1*np.std(cov_arr), np.mean(cov_arr) + 1*np.std(cov_arr))
-                    fig.savefig('{}/ISI_correlation1/autocorhistplot1_{}.png'.format(sim_dir, curr_idc))
+                    fig.savefig('{}/ISI_crosscorrelation1/autocorhistplot1_{}.png'.format(sim_dir, curr_idc))
                     
                     fig, ax = subplots()
                     ax.plot(dens_lims, dens_arr)
                     ax.set_xlabel('Zero-lag cross-correlation')
                     ax.set_ylabel('Density')
                     ax.set_xlim(np.mean(cov_arr) - 2*np.std(cov_arr), np.mean(cov_arr) + 2*np.std(cov_arr))
-                    fig.savefig('{}/ISI_correlation1/autocorhistplot2_{}.png'.format(sim_dir, curr_idc))
+                    fig.savefig('{}/ISI_crosscorrelation1/autocorhistplot2_{}.png'.format(sim_dir, curr_idc))
             
             else:
                 with open(ISI_file, 'a') as f:

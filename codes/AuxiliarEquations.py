@@ -611,25 +611,82 @@ def Pearson_correlation(spike_times1, spike_times2, t0, t1, t_bin, lag0, lag1):
     
     return lag_array, np.asarray(corr)
 
+def Zero_lag_Pearson_correlation(spike_times1, spike_times2, t0, t1, t_bin):
+    
+    
+    t_vec1 = set_binary_vector(spike_times1, t0, t1, t_bin)
+    t_vec2 = set_binary_vector(spike_times2, t0, t1, t_bin)
+    
+    return Pearson(t_vec1, t_vec2, 0)
+
 def Pearson_correlation_group(spike_group, t0, t1, t_bin, lag0, lag1):
     
     Nlag = int((lag1 -lag0)/t_bin)
     Ngroup = len(spike_group)
     
-    corr_group = np.zeros((int(Ngroup*(Ngroup-1)/2), Nlag))
+    # corr_group = np.zeros((int(Ngroup*(Ngroup-1)/2), Nlag))
+    corr_group = np.zeros((int(Ngroup*(Ngroup-1)), Nlag))
     k = 0
     for i in range(Ngroup):
-        for j in range(0, i):
+        # for j in range(0, i):
             
-            spike_times1 = spike_group[i]
-            spike_times2 = spike_group[j]
+        #     spike_times1 = spike_group[i]
+        #     spike_times2 = spike_group[j]
             
-            t_vec1 = set_binary_vector(spike_times1, t0, t1, t_bin)
-            t_vec2 = set_binary_vector(spike_times2, t0, t1, t_bin)
+        #     t_vec1 = set_binary_vector(spike_times1, t0, t1, t_bin)
+        #     t_vec2 = set_binary_vector(spike_times2, t0, t1, t_bin)
     
-            corr_group[k] = Pearson_correlation(spike_times1, spike_times2, t0, t1, t_bin, lag0, lag1)[1]
+        #     corr_group[k] = Pearson_correlation(spike_times1, spike_times2, t0, t1, t_bin, lag0, lag1)[1]
             
-            k+= 1
-    
+        #     k+= 1
+        for j in range(Ngroup):
+            if i !=j:
+            
+                spike_times1 = spike_group[i]
+                spike_times2 = spike_group[j]
+                
+                t_vec1 = set_binary_vector(spike_times1, t0, t1, t_bin)
+                t_vec2 = set_binary_vector(spike_times2, t0, t1, t_bin)
+        
+                corr_group[k] = Pearson_correlation(spike_times1, spike_times2, t0, t1, t_bin, lag0, lag1)[1]
+                
+                k+= 1
+                
     lag_array = np.arange(lag0, lag1, t_bin)
     return lag_array, np.mean(corr_group, axis=0)
+
+def Zero_lag_Pearson_correlation_group(spike_group, t0, t1, t_bin):
+    
+
+    Ngroup = len(spike_group)
+    
+    # corr_group = np.zeros((int(Ngroup*(Ngroup-1)/2), Nlag))
+    corr = []
+    k = 0
+    for i in range(Ngroup):
+        # for j in range(0, i):
+            
+        #     spike_times1 = spike_group[i]
+        #     spike_times2 = spike_group[j]
+            
+        #     t_vec1 = set_binary_vector(spike_times1, t0, t1, t_bin)
+        #     t_vec2 = set_binary_vector(spike_times2, t0, t1, t_bin)
+    
+        #     corr_group[k] = Pearson_correlation(spike_times1, spike_times2, t0, t1, t_bin, lag0, lag1)[1]
+            
+        #     k+= 1
+        for j in range(Ngroup):
+            if i !=j:
+            
+                spike_times1 = spike_group[i]
+                spike_times2 = spike_group[j]
+                
+                t_vec1 = set_binary_vector(spike_times1, t0, t1, t_bin)
+                t_vec2 = set_binary_vector(spike_times2, t0, t1, t_bin)
+        
+                corr.append(Zero_lag_Pearson_correlation(spike_times1, spike_times2, t0, t1, t_bin))
+                
+                k+= 1
+                
+
+    return corr
