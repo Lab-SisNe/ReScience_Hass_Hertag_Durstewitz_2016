@@ -26,7 +26,7 @@ simulation_dir = set_dir()
 
 #####----------||| Simulation control ||||----------#####
 
-control_param = {'Duration': 21000, # in ms
+control_param = {'Duration': 31000, # in ms
                  'Time step': 0.05, # in ms
                  'Noise': False, # D if noise present (int or float); anything else otherwise
                  'Method': 'rk4', # brian2 integration methods

@@ -1,7 +1,7 @@
 import numpy as np
 import os
 from matplotlib import pyplot as plt
-from PearsonCorrelation import *
+from AuxiliarEquations import *
 from SimulationSetup import *
 
 simulation_dir = set_dir()
@@ -100,4 +100,95 @@ plt.yticks(yt1,['0', '0.001'], fontsize=26)
 ax2.set_xlabel('lag (s)', fontsize=26)
 
 fig.savefig('{}/spanalysis.png'.format(simulation_dir))
+ 
+CC0 = Zero_lag_Pearson_correlation_group(stset, 1000, 61000, 2)
+meanCC0 = np.mean(CC0)
+stdCC0 = np.std(CC0)
+
+with open('{}/zero_lag_Pearson_CC.txt'.format(simulation_dir), 'a') as f:
+    print('Zero lag Pearson cross-correlation\n', file=f)
+    print('Mean:', meanCC0, file=f)
+    print('SD:', stdCC0, file=f)
+
+
+time_bin=2
+Nneurons = len(stset)
+time_interval = 60000
+N_bins = int(round(time_interval/time_bin, 0))
+binned_spiketimes = np.zeros((Nneurons, N_bins))
+
+auto_bins = N_bins//2
+
+auto_cov_arr = np.zeros((Nneurons, auto_bins))
+expecvalue_list = []
+var_list = []
+r_list = []
+sp_arr = []
+
+for i in range(len(stset)):
+    T_spike = np.asarray(stset[i]) - 1000
     
+    T1 = np.floor(T_spike/time_bin).astype(int)
+
+    count = len(T1)                        
+    expecvalue = count/N_bins
+    expecvalue_list.append(expecvalue)
+    var_list.append(expecvalue*(1-expecvalue))
+    binned_spiketimes[i, T1] = 1
+    sp_arr.append(T_spike)
+    
+k = 0
+dez = 0
+totalbins = N_bins//2
+
+for t in range(N_bins//2):
+    k+= 1
+    perc = k/totalbins*100
+    if perc//10 > dez:
+        dez = perc//10
+        print('{}% of autocorrelation concluded'.format(int(round(perc, 0))))
+    if t == 0:
+        b1 = binned_spiketimes[:, :]
+        b2 = binned_spiketimes[:, :]
+        _ = b1*b2
+        p_x = np.sum(binned_spiketimes[:, :], axis=1)/N_bins
+        p_y = p_x
+        
+    else:
+        b1 = binned_spiketimes[:, t:]
+        b2 = binned_spiketimes[:, :-t]
+        _ = b1*b2
+        p_x = np.sum(binned_spiketimes[:, :-t], axis=1)/(N_bins-t)
+        p_y = np.sum(binned_spiketimes[:, t:], axis=1)/(N_bins-t)
+   
+    p_xy = np.sum(_, axis=1)/(N_bins-2*t)
+    auto_cov_arr[:, t] = (p_xy - p_x * p_y)/np.sqrt(p_x*(1-p_x) * p_y * (1-p_y))
+
+auto_t = np.arange(auto_bins)*time_bin
+meanautoC = np.mean(auto_cov_arr, axis=0)
+
+autocorr = meanautoC[:len(auto_t)//2]
+autot = auto_t[:len(auto_t)//2]
+
+fig, [ax0, ax1] = plt.subplots(1, 2, figsize=(18,10))
+fig.subplots_adjust(left=0.1,
+                    bottom=0.1, 
+                    right=0.9, 
+                    top=0.9, 
+                    wspace=0.35, 
+                    hspace=0.1)
+ax0.plot(autot, autocorr)
+ax0.set_xlim(-10, 300)
+ax0.set_xlabel('lag (ms)', fontsize=26)
+ax0.set_ylabel('autocorrelation', fontsize=26)
+ax0.tick_params(labelsize=26)
+
+
+ax1.plot(autot[1:], autocorr[1:])
+ax1.set_xlim(2, 300)
+ax1.set_xlabel('lag (ms)', fontsize=26)
+ax1.set_ylabel('autocorrelation', fontsize=26)
+plt.sca(ax1)
+plt.xticks([2, 100, 200, 300], fontsize=26)
+ax1.tick_params(labelsize=26)
+fig.savefig('{}/ISI_autocorrelation.png'.format(simulation_dir))

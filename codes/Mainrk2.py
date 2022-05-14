@@ -32,7 +32,7 @@ control_param = {'Duration': 7000, # in ms
                  'Method': 'gsl_rk2', # brian2 integration methods
                  'Neurons per stripe': 1000,
                  'Stripes': 1,
-                 'Recover/Save': False, ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
+                 'Recover/Save': 0, ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
                  'run': True, ## Insert False to avoid running; otherwise, insert True
                  'seed': 0, ## Insert seed number; otherwise, insert False
                  }
