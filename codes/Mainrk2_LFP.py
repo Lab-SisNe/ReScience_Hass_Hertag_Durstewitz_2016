@@ -32,9 +32,9 @@ control_param = {'Duration': 31000, # in ms
                  'Method': 'gsl_rk2', # brian2 integration methods
                  'Neurons per stripe': 1000,
                  'Stripes': 1,
-                 'Recover/Save': 0, ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
+                 'Recover/Save': False, ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
                  'run': True, ## Insert False to avoid running; otherwise, insert True
-                 'seed': 0, ## Insert seed number; otherwise, insert False
+                 'seed': None, ## Insert seed number; otherwise, insert None
                  }
 
 ###############----------||| Scales |||----------###############
@@ -470,7 +470,7 @@ analysis_params['Frequency'] = {
                                                         'Maximum spike number': 100000,
                                                         'Filtering': 'Gaussian',
                                                         'Filtering parameter': 11,
-                                                        'Graphs': True,
+                                                        'Graphs': False,
                                                         },                             
                                   }
 
@@ -502,12 +502,14 @@ analysis_params['Populational rate'] = {
                                             #               'Stop': stop,
                                             #               'Time bin': 1,
                                             #               'Moving average': 31,
+                                            #               'Graphs': False,
                                             #               },
                                             # 'Analysis 1': {'Group': [['PC', 0],],
                                             #               'Start': start,
                                             #               'Stop': stop,
                                             #               'Time bin': 1,
                                             #               'Moving average': 31,
+                                            #               'Graphs': False,
                                             #               },
 
                                           }
@@ -671,7 +673,7 @@ if control_param['run']:
             Imonitort_list, I_list, LFPfrequency_list, LFPpower_list, MALFPfrequency_list, MALFPpower_list = cortex.frequency_analysis(analysis_params['Frequency'].values())
             
         if len(analysis_params['Populational rate'].values()):
-            popratet_lists, popratecount_lists, popratefreq_lists = cortex.population_rate(analysis_params['Populational rate'].values())
+            popratet_lists, popratecount_lists, popratefreq_lists, popspikescount_list = cortex.population_rate(analysis_params['Populational rate'].values())
             
         if len(analysis_params['Rate stratification'].values()):
             ratestratification_total_list, ratestratification_count_list, ratestratification_neuron_list = cortex.rate_stratification(analysis_params['Rate stratification'].values())
@@ -691,4 +693,31 @@ if control_param['run']:
 #               ]
 # cortex.groups_params(GroupSetup, simulation_dir)
 
+freq, pwr  = MALFPfrequency_list[0], MALFPpower_list[0]
+
+
+fig, ax = subplots(figsize=(12,10))
+ax.plot(freq, pwr)
+ax.set_xlim(2.5, 7)
+ax.set_ylim(0, 16)
+ax.vlines(np.log(60), 8, 15, linestyle='--', color='black')
+ax.plot([2, np.log(60)], [13 + (np.log(60)-2), 13], linestyle='--', color='blue')
+ax.plot([np.log(60), 7], [12.5, 12.5 - 2*(7-np.log(60))], linestyle='--', color='blue')
+ax.plot([np.log(60), 7], [10, 10 - 3*(7-np.log(60))], linestyle='--', color='blue')
+ax.set_xlabel('log(Frequency) (log[Hz])', fontsize=26)
+ax.set_ylabel('log(Power) (arbitrary unit)', fontsize=26)
+plt.gca()
+plt.yticks([0, 4, 8, 12, 16], fontsize=26)
+plt.xticks([3, 4, 5, 6, 7], fontsize=26)
+ax.text( 3, 7, '60 Hz', fontsize=26)
+ax.arrow(3.6, 7.5, 0.4, 1, head_width=0.1)
+ax.text(3.25, 14.5, '1/f', fontsize=26)
+ax.text(5.5, 11, '$1/f^2$', fontsize=26)
+ax.text(5.5, 3, '$1/f^3$', fontsize=26)
+
+source = 'I_tot'
+curr_idc = 0
+if not os.path.isdir('{}/{}_frequency'.format(simulation_dir, source)):
+    os.mkdir('{}/{}_frequency'.format(sim_dir, source))
+fig.savefig('{}/{}_frequency/SPD_{}_{}.png'.format(simulation_dir,source, source, curr_idc))
 

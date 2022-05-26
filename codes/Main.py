@@ -32,9 +32,9 @@ control_param = {'Duration': 7000, # in ms
                  'Method': 'rk4', # brian2 integration methods
                  'Neurons per stripe': 1000,
                  'Stripes': 1,
-                 'Recover/Save': 'Save', ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
-                 'run': True, ## Insert False to avoid running; otherwise, insert True
-                 'seed': 0, ## Insert seed number; otherwise, insert False
+                 'Recover/Save': False , ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
+                 'run': False, ## Insert False to avoid running; otherwise, insert True
+                 'seed': None, ## Insert seed number; otherwise, insert None
                  }
 
 ###############----------||| Scales |||----------###############
@@ -679,7 +679,7 @@ if control_param['run']:
             Imonitort_list, I_list, LFPfrequency_list, LFPpower_list, filtered_LFPfrequency_list, filtered_LFPpower_list = cortex.frequency_analysis(analysis_params['Frequency'].values())
             
         if len(analysis_params['Populational rate'].values()):
-            popratet_lists, popratecount_lists, popratefreq_lists = cortex.population_rate(analysis_params['Populational rate'].values())
+            popratet_lists, popratecount_lists, popratefreq_lists, popspikescount_list = cortex.population_rate(analysis_params['Populational rate'].values())
             
         if len(analysis_params['Rate stratification'].values()):
             ratestratification_total_list, ratestratification_count_list, ratestratification_neuron_list = cortex.rate_stratification(analysis_params['Rate stratification'].values())
