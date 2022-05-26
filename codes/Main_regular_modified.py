@@ -10,6 +10,7 @@ from warnings import filterwarnings
 filterwarnings("ignore", category=RuntimeWarning) 
 BrianLogger.suppress_name('resolution_conflict', 'device')
 
+
 simulation_dir = set_dir()
 
 ##############################################################################
@@ -34,7 +35,7 @@ control_param = {'Duration': 1200, # in ms
                  'Stripes': 1,
                  'Recover/Save': False, ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
                  'run': True, ## Insert False to avoid running; otherwise, insert True
-                 'seed': 0, ## Insert seed number; otherwise, insert False
+                 'seed': None, ## Insert seed number; otherwise, insert None
                  }
 
 ###############----------||| Scales |||----------###############
@@ -166,7 +167,7 @@ PoissonStimuli = [
 pulse1 = 1000    
 
 RegularStimuli = [
-                [1, 1, 250, 0.08, 0, pulse1, pulse1+5, [[0, 0, 0.1],],],                
+                [1, 1, 250, 0.1, 0, pulse1, pulse1+5, [[0, 0, 0.1],],],                
                 ]       
 
 
@@ -549,161 +550,166 @@ analysis_params['Rate stratification'] = {
                                           
                                           }
 
+
+################==============================###################
+################===== Information saving =====###################
+################==============================###################
+
+# save_info(control_param, clustering, PoissonStimuli, RegularStimuli, NeuronMonitor, 
+#       SynapsesMonitor, analysis_params, scales1, scales2, constant_current, 
+#       fluctuating_current, simulation_dir)
+
+param_std_scale = np.ones((10, 14)) * variability[varN]
+scales1 = gmax_scale, pCon_scale, param_std_scale
+
+variability = [0.2, 0.3, 0.5, 0.7, 0.8, 1]
+
+Ntrials = 18
+PC_L23_spikes =[[] for N in range(len(variability))]
+PC_L5_spikes =[[] for N in range(len(variability))]
+
+
+for N in range(Ntrials):
+    for varN in range(len(variability)):
+        print('REPORT: Trial {}, variability {}\n'.format(N, variability[varN]))    
+    
+        ###################################################################
+        ##########################            #############################
+        ########################## Simulation #############################
+        ##########################            #############################
+        ###################################################################
+    
+        start_time = time()
+    
+        print("REPORT: Simulation directory: '{}'\n".format(simulation_dir))
+        print('REPORT: Starting network\n')
+        
+        ###############----------||| Parameters and network setup |||----------###############
+        
+        if type(control_param['Recover/Save']) is int:      ##### Recover from previous simulation
+            print("REPORT: Recovering membrane and synaptic parameters from 'simulation_{}'".format(control_param['Recover/Save'])) 
+            NeuPar, V0, STypPar, SynPar,SPMtx, group_distr = set_setup(control_param['Recover/Save'])
+            print('REPORT: Parameters recovered\n')
             
-variability = np.round(np.arange(0, 1.01, 0.1),1)
-PC_L23_spikes =[]
-PC_L5_spikes =[]
-
-for var_scale in variability:
-    param_std_scale = np.ones((10, 14)) * var_scale
-    scales1 = gmax_scale, pCon_scale, param_std_scale
-    
-    ################==============================###################
-    ################===== Information saving =====###################
-    ################==============================###################
-
-    save_info(control_param, clustering, PoissonStimuli, RegularStimuli, NeuronMonitor, 
-          SynapsesMonitor, analysis_params, scales1, scales2, constant_current, 
-          fluctuating_current, simulation_dir)
-
-
-    ###################################################################
-    ##########################            #############################
-    ########################## Simulation #############################
-    ##########################            #############################
-    ###################################################################
-
-    start_time = time()
-
-    print("REPORT: Simulation directory: '{}'\n".format(simulation_dir))
-    print('REPORT: Starting network\n')
-    
-    ###############----------||| Parameters and network setup |||----------###############
-    
-    if type(control_param['Recover/Save']) is int:      ##### Recover from previous simulation
-        print("REPORT: Recovering membrane and synaptic parameters from 'simulation_{}'".format(control_param['Recover/Save'])) 
-        NeuPar, V0, STypPar, SynPar,SPMtx, group_distr = set_setup(control_param['Recover/Save'])
-        print('REPORT: Parameters recovered\n')
+        else:       ##### Generate new parameters
+            print('REPORT: Generating membrane and synaptic parameters')
+            NeuPar, V0, STypPar, SynPar,SPMtx, group_distr = NetworkSetup(control_param['Neurons per stripe'], control_param['Stripes'], scales1, clustering)
+            print('REPORT: Parameters generated')
+            if control_param['Recover/Save'] in ['Save', 'save', 'SAVE']:       #### Save parameters
+                save_setup(NeuPar, V0, STypPar, SynPar,SPMtx, group_distr, simulation_dir)
+                print("REPORT: Parameters saved in simulation directory ('{}')\n".format(simulation_dir))
+            else:
+                print('\n')
         
-    else:       ##### Generate new parameters
-        print('REPORT: Generating membrane and synaptic parameters')
-        NeuPar, V0, STypPar, SynPar,SPMtx, group_distr = NetworkSetup(control_param['Neurons per stripe'], control_param['Stripes'], scales1, clustering)
-        print('REPORT: Parameters generated')
-        if control_param['Recover/Save'] in ['Save', 'save', 'SAVE']:       #### Save parameters
-            save_setup(NeuPar, V0, STypPar, SynPar,SPMtx, group_distr, simulation_dir)
-            print("REPORT: Parameters saved in simulation directory ('{}')\n".format(simulation_dir))
-        else:
-            print('\n')
-    
-    cortex = CortexNetwork(NeuPar, V0, STypPar,SynPar,SPMtx, group_distr, constant_current, fluctuating_current, scales2, noise,
-                            control_param['Method'], control_param['Time step'], control_param['seed'], simulation_dir)
-    
-    if type(control_param['seed']) is not bool:
-        print('REPORT: Seed set to {}\n'.format(control_param['seed']))
-    else:   
-        print('REPORT: No seed\n')
-    
-                           
-    minutes, seconds = divmod(time() - start_time, 60)
-    print("REPORT: Elapsed time for network setup: {:0>2}m {:0>2}s\n".format(int(minutes), int(round(seconds, 0))))
-    
-    #####----------||| Monitors setup |||----------#####
-    
-    if control_param['run']:
-        if len(NeuronMonitor) + len(SynapsesMonitor): ##### Set monitors
-            print('REPORT: Setting monitors')
-            if len(NeuronMonitor):
-                cortex.neuron_monitors(NeuronMonitor)
-            if len(SynapsesMonitor):
-                cortex.synapses_monitors(SynapsesMonitor) 
-            print('REPORT: Monitors set\n')
-    
-    ###############----------||| Stimuli setup |||----------###############
-    
-    if control_param['run']:
-        if len(PoissonStimuli) + len(RegularStimuli)>0:
-            print('REPORT: Setting stimuli protocols')
-            if len(PoissonStimuli):
-                cortex.poisson_input(PoissonStimuli)
-            if len(RegularStimuli):
-                cortex.regular_input(RegularStimuli)
-            print('REPORT: Stimuli protocols set\n')
-    
-    ###############----------||| Actual simulation |||----------###############
-    
-    if control_param['run']:
-        print("REPORT: Preparing simulation")
-        print('Time step: {} ms'.format(control_param['Time step']))
-        print('Duration: {} ms'.format(control_param['Duration']))
-        if type(control_param['Noise']) is int or type(control_param['Noise']) is float:
-            print('Noise (D): {} '.format(control_param['Noise']))
-        else:
-            print('Noise (D): no noise')
-        print('Integration method:', control_param['Method'], end='\n\n')
+        cortex = CortexNetwork(NeuPar, V0, STypPar,SynPar,SPMtx, group_distr, constant_current, fluctuating_current, scales2, noise,
+                                control_param['Method'], control_param['Time step'], control_param['seed'], simulation_dir)
         
-        run_time = time()
-        defaultclock.dt = control_param['Duration']*ms
-        seed(control_param['seed'])
-        cortex.run(control_param['Duration']*ms)
-         
-        print()
-        minutes, seconds = divmod(time() - run_time, 60)
-        print("REPORT: Elapsed time for network run: {:0>2}m {:0>2}s\n".format(int(minutes), int(round(seconds, 0))))
+        if type(control_param['seed']) is not bool:
+            print('REPORT: Seed set to {}\n'.format(control_param['seed']))
+        else:   
+            print('REPORT: No seed\n')
         
+                               
         minutes, seconds = divmod(time() - start_time, 60)
-        print("REPORT: Total elapsed time: {:0>2}m {:0>2}s\n".format(int(minutes), int(round(seconds, 0))))
-    
-        ###############----------||| Analysis |||----------###############
+        print("REPORT: Elapsed time for network setup: {:0>2}m {:0>2}s\n".format(int(minutes), int(round(seconds, 0))))
         
-        if len(analysis_params['ISI analysis'].values()) + len(analysis_params['ISI autocorrelation1'].values()) + len(analysis_params['ISI crosscorrelation1'].values()) + len(analysis_params['ISI correlation2'].values()) + len(analysis_params['ISI Pearson'].values()) + len(analysis_params['V analysis'].values()) + len(analysis_params['V correlation'].values()) + len(analysis_params['Frequency'].values()) + len(analysis_params['Populational rate'].values()) + len(analysis_params['Rate stratification'].values()):
-            print('REPORT: Performing analysis')
+        #####----------||| Monitors setup |||----------#####
+        
+        if control_param['run']:
+            if len(NeuronMonitor) + len(SynapsesMonitor): ##### Set monitors
+                print('REPORT: Setting monitors')
+                if len(NeuronMonitor):
+                    cortex.neuron_monitors(NeuronMonitor)
+                if len(SynapsesMonitor):
+                    cortex.synapses_monitors(SynapsesMonitor) 
+                print('REPORT: Monitors set\n')
+        
+        ###############----------||| Stimuli setup |||----------###############
+        
+        if control_param['run']:
+            if len(PoissonStimuli) + len(RegularStimuli)>0:
+                print('REPORT: Setting stimuli protocols')
+                if len(PoissonStimuli):
+                    cortex.poisson_input(PoissonStimuli)
+                if len(RegularStimuli):
+                    cortex.regular_input(RegularStimuli)
+                print('REPORT: Stimuli protocols set\n')
+        
+        ###############----------||| Actual simulation |||----------###############
+        
+        if control_param['run']:
+            print("REPORT: Preparing simulation")
+            print('Time step: {} ms'.format(control_param['Time step']))
+            print('Duration: {} ms'.format(control_param['Duration']))
+            if type(control_param['Noise']) is int or type(control_param['Noise']) is float:
+                print('Noise (D): {} '.format(control_param['Noise']))
+            else:
+                print('Noise (D): no noise')
+            print('Integration method:', control_param['Method'], end='\n\n')
             
-            if len(analysis_params['ISI analysis'].values()):
-                ISImean_list, ISIstd_list, ISICV_list = cortex.ISI_analysis(analysis_params['ISI analysis'].values())           
+            run_time = time()
+            defaultclock.dt = control_param['Duration']*ms
+            seed(control_param['seed'])
+            cortex.run(control_param['Duration']*ms)
+             
+            print()
+            minutes, seconds = divmod(time() - run_time, 60)
+            print("REPORT: Elapsed time for network run: {:0>2}m {:0>2}s\n".format(int(minutes), int(round(seconds, 0))))
             
-            if len(analysis_params['ISI autocorrelation1'].values()):
-                autocorrvalue_list, autocorrt_list = cortex.ISI_autocorrelation1(analysis_params['ISI autocorrelation1'].values())           
+            minutes, seconds = divmod(time() - start_time, 60)
+            print("REPORT: Total elapsed time: {:0>2}m {:0>2}s\n".format(int(minutes), int(round(seconds, 0))))
+        
+            ###############----------||| Analysis |||----------###############
             
-            if len(analysis_params['ISI crosscorrelation1'].values()):
-                zerolagCC_list  = cortex.ISI_crosscorrelation1(analysis_params['ISI crosscorrelation1'].values())           
-            
-            if len(analysis_params['ISI correlation2'].values()):
-                DAzerolagCC_list, DAautocorrvalue_list, DAautocorrt_list = cortex.DAcorrelation_analysis(analysis_params['ISI correlation2'].values())
-            
-            if len(analysis_params['ISI Pearson'].values()):
-                lag_array_list, correlation_mean_list = cortex.Pearson_correlation(analysis_params['ISI Pearson'].values())
-            
-            if len(analysis_params['V analysis'].values()):
-                Vmean_list, Vstd_list, Vsubthres_list = cortex.V_analysis(analysis_params['V analysis'].values())
-            
-            if len(analysis_params['V correlation'].values()):
-                monitor_t,Vindividualstd_list, Vindividualmean_list, Vgroup_list, VzerolagCC_list, VnormalizedzerolagCC_list = cortex.Vcorr_analysis(analysis_params['V correlation'].values())
-            
-            if len(analysis_params['Frequency'].values()):
-                Imonitort_list, I_list, LFPfrequency_list, LFPpower_list, MALFPfrequency_list, MALFPpower_list = cortex.frequency_analysis(analysis_params['Frequency'].values())
+            if len(analysis_params['ISI analysis'].values()) + len(analysis_params['ISI autocorrelation1'].values()) + len(analysis_params['ISI crosscorrelation1'].values()) + len(analysis_params['ISI correlation2'].values()) + len(analysis_params['ISI Pearson'].values()) + len(analysis_params['V analysis'].values()) + len(analysis_params['V correlation'].values()) + len(analysis_params['Frequency'].values()) + len(analysis_params['Populational rate'].values()) + len(analysis_params['Rate stratification'].values()):
+                print('REPORT: Performing analysis')
                 
-            if len(analysis_params['Populational rate'].values()):
-                popratet_lists, popratecount_lists, popratefreq_lists, popspikescount_list  = cortex.population_rate(analysis_params['Populational rate'].values())
+                if len(analysis_params['ISI analysis'].values()):
+                    ISImean_list, ISIstd_list, ISICV_list = cortex.ISI_analysis(analysis_params['ISI analysis'].values())           
                 
-            if len(analysis_params['Rate stratification'].values()):
-                ratestratification_total_list, ratestratification_count_list, ratestratification_neuron_list = cortex.rate_stratification(analysis_params['Rate stratification'].values())
+                if len(analysis_params['ISI autocorrelation1'].values()):
+                    autocorrvalue_list, autocorrt_list = cortex.ISI_autocorrelation1(analysis_params['ISI autocorrelation1'].values())           
+                
+                if len(analysis_params['ISI crosscorrelation1'].values()):
+                    zerolagCC_list  = cortex.ISI_crosscorrelation1(analysis_params['ISI crosscorrelation1'].values())           
+                
+                if len(analysis_params['ISI correlation2'].values()):
+                    DAzerolagCC_list, DAautocorrvalue_list, DAautocorrt_list = cortex.DAcorrelation_analysis(analysis_params['ISI correlation2'].values())
+                
+                if len(analysis_params['ISI Pearson'].values()):
+                    lag_array_list, correlation_mean_list = cortex.Pearson_correlation(analysis_params['ISI Pearson'].values())
+                
+                if len(analysis_params['V analysis'].values()):
+                    Vmean_list, Vstd_list, Vsubthres_list = cortex.V_analysis(analysis_params['V analysis'].values())
+                
+                if len(analysis_params['V correlation'].values()):
+                    monitor_t,Vindividualstd_list, Vindividualmean_list, Vgroup_list, VzerolagCC_list, VnormalizedzerolagCC_list = cortex.Vcorr_analysis(analysis_params['V correlation'].values())
+                
+                if len(analysis_params['Frequency'].values()):
+                    Imonitort_list, I_list, LFPfrequency_list, LFPpower_list, MALFPfrequency_list, MALFPpower_list = cortex.frequency_analysis(analysis_params['Frequency'].values())
+                    
+                if len(analysis_params['Populational rate'].values()):
+                    popratet_lists, popratecount_lists, popratefreq_lists, popspikescount_list  = cortex.population_rate(analysis_params['Populational rate'].values())
+                    
+                if len(analysis_params['Rate stratification'].values()):
+                    ratestratification_total_list, ratestratification_count_list, ratestratification_neuron_list = cortex.rate_stratification(analysis_params['Rate stratification'].values())
+                
+                print('REPORT: Analysis concluded\n')
             
-            print('REPORT: Analysis concluded\n')
-        
-        PC_L23_spikes.append(popspikescount_list[0])
-        PC_L5_spikes.append(popspikescount_list[1])
-        
-        ###############----------||| Raster plot |||----------###############
-        
-        print(var_scale)
-        if var_scale == 0.6:
-            target = np.asarray(cortex.group_distr[0][0])
+            PC_L23_spikes[varN].append(popspikescount_list[0])
+            PC_L5_spikes[varN].append(popspikescount_list[1])
             
-            fig, ax = cortex.raster_plot(tlims=[pulse1-25, pulse1+75], save=False, figuresize=(12, 10), plotsize=10 )
-            plt.sca(ax)
-            plt.vlines(pulse1, 0, cortex.NeuPar.shape[1]+15, color='black', linestyle='dotted', linewidth=2)
-            plt.vlines(pulse1, min(target), max(target), color='purple', linestyle='--', linewidth=3)
-            fig.savefig('{}/Raster_plot_regular1.png'.format(simulation_dir))
+            ###############----------||| Raster plot |||----------###############
+            
+            
+            if variability[varN] == 0.8 and N == 0:
+                target = np.asarray(cortex.group_distr[0][0])
+                
+                fig, ax = cortex.raster_plot(tlims=[pulse1-25, pulse1+75], save=False, figuresize=(12, 10), plotsize=10 )
+                plt.sca(ax)
+                plt.vlines(pulse1, 0, cortex.NeuPar.shape[1]+15, color='black', linestyle='dotted', linewidth=2)
+                plt.vlines(pulse1, min(target), max(target), color='purple', linestyle='--', linewidth=3)
+                fig.savefig('{}/Raster_plot_regular1.png'.format(simulation_dir))
 
     
 ###############----------||| Parameters summary |||----------###############
@@ -712,17 +718,40 @@ for var_scale in variability:
 #               ]
 # cortex.groups_params(GroupSetup, simulation_dir)
 
-PC_L23_spikes = np.asarray(PC_L23_spikes)
-PC_L5_spikes = np.asarray(PC_L5_spikes)
 
-variability *= 100
-PC_L23_spikes1 = PC_L23_spikes * 100/PC_L23_spikes[-1]
-PC_L5_spikes1 = PC_L5_spikes * 100/PC_L5_spikes[-1]
+PC_L23_mean = []
+PC_L23_std = []
+PC_L5_mean = []
+PC_L5_std = []
+
+for varN in range(len(variability)):
+    PC_L23_mean.append(np.mean(PC_L23_spikes[varN]))
+    PC_L23_std.append(np.std(PC_L23_spikes[varN]))
+    PC_L5_mean.append(np.mean(PC_L5_spikes[varN]))
+    PC_L5_std.append(np.std(PC_L5_spikes[varN]))
+    
+    
+variability = np.asarray(variability)*100
+
+PC_L23_mean = 100*np.asarray(PC_L23_mean)/PC_L23_mean[-1]
+PC_L5_mean = 100*np.asarray(PC_L5_mean)/PC_L5_mean[-1]
+
+PC_L23_SEM = 100*np.asarray(PC_L23_std)/np.sqrt(len(PC_L23_spikes[0]))/PC_L23_mean[-1]
+PC_L5_SEM = 100*np.asarray(PC_L5_std)/np.sqrt(len(PC_L5_spikes[0]))/PC_L5_mean[-1]
+
 fig, ax = plt.subplots(figsize=(12, 10))
-ax.set_ylabel('relative spiking activity (%)', fontsize=26)
+ax.set_ylabel('relative spiking activity', fontsize=26)
 ax.set_xlabel('fraction of original membrane parameter SD (%)', fontsize=26)
 ax.tick_params(labelsize=26)
-ax.plot(variability, PC_L23_spikes1, label='PC L23')
-ax.plot(variability, PC_L5_spikes1, label='PC 5')
+ax.plot(variability, PC_L23_mean, label='PC L23', color='blue')
+ax.errorbar(variability, PC_L23_mean, yerr = PC_L23_SEM, fmt = 'o',color = 'blue', 
+            ecolor = 'blue', elinewidth = 2, capsize=3)
+ax.plot(variability, PC_L5_mean, label='PC 5', color='orange')
+ax.errorbar(variability, PC_L5_mean, yerr = PC_L5_SEM, fmt = 'o',color = 'orange', 
+            ecolor = 'orange', elinewidth = 2, capsize=3)
+ax.set_xlim(0, 120)
+plt.gca()
+plt.xticks([0, 50, 100])
 plt.legend(prop={'size': 26})
 fig.savefig('{}/Variability.png'.format(simulation_dir))
+

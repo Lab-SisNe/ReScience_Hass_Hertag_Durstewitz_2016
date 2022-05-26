@@ -32,9 +32,9 @@ control_param = {'Duration': 61000, # in ms
                  'Method': 'rk4', # brian2 integration methods
                  'Neurons per stripe': 1000,
                  'Stripes': 1,
-                 'Recover/Save': 0, ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
+                 'Recover/Save': False, ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
                  'run': True, ## Insert False to avoid running; otherwise, insert True
-                 'seed': 0, ## Insert seed number; otherwise, insert False
+                 'seed': None, ## Insert seed number; otherwise, insert None
                  }
 
 ###############----------||| Scales |||----------###############
@@ -504,12 +504,14 @@ analysis_params['Populational rate'] = {
                                             #               'Stop': stop,
                                             #               'Time bin': 1,
                                             #               'Moving average': 31,
+                                            #               'Graphs': False,
                                             #               },
                                             # 'Analysis 1': {'Group': [['PC', 0],],
                                             #               'Start': start,
                                             #               'Stop': stop,
                                             #               'Time bin': 1,
                                             #               'Moving average': 31,
+                                            #               'Graphs': False,
                                             #               },
 
                                           }
@@ -675,7 +677,7 @@ if control_param['run']:
             Imonitort_list, I_list, LFPfrequency_list, LFPpower_list, MALFPfrequency_list, MALFPpower_list = cortex.frequency_analysis(analysis_params['Frequency'].values())
             
         if len(analysis_params['Populational rate'].values()):
-            popratet_lists, popratecount_lists, popratefreq_lists = cortex.population_rate(analysis_params['Populational rate'].values())
+            popratet_lists, popratecount_lists, popratefreq_lists, popspikescount_list = cortex.population_rate(analysis_params['Populational rate'].values())
             
         if len(analysis_params['Rate stratification'].values()):
             ratestratification_total_list, ratestratification_count_list, ratestratification_neuron_list = cortex.rate_stratification(analysis_params['Rate stratification'].values())
@@ -708,8 +710,8 @@ autot = autocorrt_list[0]
 
 fig, [ax0, ax1, ax2] = subplots(1,3, figsize=(18, 10))
 
-fig.text(0.01, 0.5, 'relative frequence', va='center', rotation='vertical', fontsize=26)
-fig.text(0.315, 0.5, 'relative frequence', va='center', rotation='vertical', fontsize=26)
+fig.text(0.01, 0.5, 'relative frequency', va='center', rotation='vertical', fontsize=26)
+fig.text(0.315, 0.5, 'relative frequency', va='center', rotation='vertical', fontsize=26)
 fig.text(0.62, 0.5, 'cross-correlation', va='center', rotation='vertical', fontsize=26)
 
 fig.subplots_adjust(left=0.08,
@@ -729,6 +731,10 @@ plt.yticks(yt0, yt1)
 yt = np.asarray([50.5, 101])
 plt.yticks(yt0, yt1, fontsize=26)
 ax0.set_xlabel('ISI mean (s)', fontsize=26)
+x0, x1 = ax0.get_xlim()
+y0, y1 = ax0.get_ylim()
+ax0.text(0.15*x0 + 0.85*x1, 0.05*y0 + 0.95*y1, '(a)', fontsize=26)
+
 
 ax1.hist(ISICV, bins=int(np.sqrt(len(ISICV))), color='blue')
 plt.sca(ax1)
@@ -738,6 +744,9 @@ ax1.set_xlabel('ISI CV', fontsize=26)
 yt1 = np.asarray([0.1, 0.2])
 yt0 = yt1 * len(ISICV)               
 plt.yticks(yt0, yt1, fontsize=26)
+x0, x1 = ax1.get_xlim()
+y0, y1 = ax1.get_ylim()
+ax1.text(0.15*x0 + 0.85*x1, 0.05*y0 + 0.95*y1, '(b)', fontsize=26)
 
 lag = lag/1000
 ax2.plot(lag, correlation, color='blue')
@@ -746,9 +755,11 @@ ax2.set_ylim(-0.0002, 0.0012)
 plt.sca(ax2)
 plt.xticks([-0.015, 0, 0.015], [-0.015, '0', 0.015], fontsize=26)
 yt1 = np.asarray([0, 0.001])
-           
 plt.yticks(yt1,['0', '0.001'], fontsize=26)
 ax2.set_xlabel('lag (s)', fontsize=26)
+x0, x1 = ax2.get_xlim()
+y0, y1 = ax2.get_ylim()
+ax2.text(0.15*x0 + 0.85*x1, 0.05*y0 + 0.95*y1, '(c)', fontsize=26)
 
 fig.savefig('{}/ISI_analysis.png'.format(simulation_dir))
 
@@ -775,25 +786,3 @@ plt.xticks([2, 100, 200, 300], fontsize=26)
 ax1.tick_params(labelsize=26)
 fig.savefig('{}/ISI_autocorrelation.png'.format(simulation_dir))
 
-
-# fig, ax = plt.subplots(figsize=(18,10))
-# fig.subplots_adjust(left=0.1,
-#                     bottom=0.1, 
-#                     right=0.9, 
-#                     top=0.9, 
-#                     wspace=0.35, 
-#                     hspace=0.1)
-# ax.plot(autot, autocorr)
-# ax.set_xlim(0, 500)
-# ax.set_xlabel('lag (ms)', fontsize=26)
-# ax.set_ylabel('autocorrelation', fontsize=26)
-# ax.tick_params(labelsize=26)
-# fig.savefig('{}/autocorr.png'.format(simulation_dir))
-
-# fig, ax = plt.subplots(figsize=(18,10))
-# ax.plot(autot[1:], autocorr[1:])
-# ax.set_xlim(2, 500)
-# ax.set_xlabel('lag (ms)', fontsize=26)
-# ax.set_ylabel('autocorrelation', fontsize=26)
-# ax.tick_params(labelsize=26)
-# fig.savefig('{}/autocorr.png'.format(simulation_dir))

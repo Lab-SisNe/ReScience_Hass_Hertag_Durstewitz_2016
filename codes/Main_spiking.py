@@ -32,9 +32,9 @@ control_param = {'Duration': 31000, # in ms
                  'Method': 'rk4', # brian2 integration methods
                  'Neurons per stripe': 1000,
                  'Stripes': 1,
-                 'Recover/Save': 0, ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
+                 'Recover/Save': False, ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
                  'run': True, ## Insert False to avoid running; otherwise, insert True
-                 'seed': 0, ## Insert seed number; otherwise, insert False
+                 'seed': None, ## Insert seed number; otherwise, insert None
                  }
 
 ###############----------||| Scales |||----------###############
@@ -500,12 +500,14 @@ analysis_params['Populational rate'] = {
                                             #               'Stop': stop,
                                             #               'Time bin': 1,
                                             #               'Moving average': 31,
+                                            #               'Graphs': False,
                                             #               },
                                             # 'Analysis 1': {'Group': [['PC', 0],],
                                             #               'Start': start,
                                             #               'Stop': stop,
                                             #               'Time bin': 1,
                                             #               'Moving average': 31,
+                                            #               'Graphs': False,
                                             #               },
 
                                           }
@@ -668,7 +670,7 @@ if control_param['run']:
             Imonitort_list, I_list, LFPfrequency_list, LFPpower_list, MALFPfrequency_list, MALFPpower_list = cortex.frequency_analysis(analysis_params['Frequency'].values())
             
         if len(analysis_params['Populational rate'].values()):
-            popratet_lists, popratecount_lists, popratefreq_lists = cortex.population_rate(analysis_params['Populational rate'].values())
+            popratet_lists, popratecount_lists, popratefreq_lists, popspikescount_list = cortex.population_rate(analysis_params['Populational rate'].values())
             
         if len(analysis_params['Rate stratification'].values()):
             ratestratification_total_list, ratestratification_count_list, ratestratification_neuron_list = cortex.rate_stratification(analysis_params['Rate stratification'].values())

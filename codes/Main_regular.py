@@ -32,9 +32,9 @@ control_param = {'Duration': 4000, # in ms
                  'Method': 'rk4', # brian2 integration methods
                  'Neurons per stripe': 1000,
                  'Stripes': 1,
-                 'Recover/Save': 0, ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
+                 'Recover/Save': False, ## For recovering: insert the directory number; for saving: insert 'Save'; else: insert False
                  'run': True, ## Insert False to avoid running; otherwise, insert True
-                 'seed': 0, ## Insert seed number; otherwise, insert False
+                 'seed': None, ## Insert seed number; otherwise, insert None
                  }
 
 ###############----------||| Scales |||----------###############
@@ -167,8 +167,8 @@ pulse1 = 1000
 pulse2 = 2500          
 
 RegularStimuli = [
-                [1, 1, 250, 0.08, 0, pulse1, pulse1+5, [[0, 0, 0.1],],],                
-                [1, 1, 500, 0.08, 0, pulse2, pulse2+5, [[0, 0, 0.1],],],
+                [1, 1, 250, 0.1, 0, pulse1, pulse1+5, [[0, 0, 0.1],],],                
+                [1, 1, 500, 0.1, 0, pulse2, pulse2+5, [[0, 0, 0.1],],],
                 ]       
 
 
@@ -465,16 +465,16 @@ analysis_params['V correlation'] = {
 
 
 analysis_params['Frequency'] = {
-                                'Analysis 1':{'Group': [['all', 0,],], #--> to LFP
-                                                        'Source': 'I_tot',
-                                                        'Start': 1000,
-                                                        'Stop': stop,
-                                                        'Minimum spike number': 0,
-                                                        'Maximum spike number': 100000,
-                                                        'Filtering': 'Gaussian',
-                                                        'Filtering parameter': 11,
-                                                        'Graphs': True,
-                                                        },                             
+                                # 'Analysis 1':{'Group': [['all', 0,],], #--> to LFP
+                                #                         'Source': 'I_tot',
+                                #                         'Start': 1000,
+                                #                         'Stop': stop,
+                                #                         'Minimum spike number': 0,
+                                #                         'Maximum spike number': 100000,
+                                #                         'Filtering': 'Gaussian',
+                                #                         'Filtering parameter': 11,
+                                #                         'Graphs': True,
+                                #                         },                             
                                   }
 
                   
@@ -499,18 +499,34 @@ analysis_params['Frequency'] = {
 
                                 
 analysis_params['Populational rate'] = {
-                                            # 'Analysis 0': {'Group': [['IN_L', 0],],
-                                            #               'Start': start,
-                                            #               'Stop': stop,
-                                            #               'Time bin': 1,
-                                            #               'Moving average': 31,
-                                            #               },
-                                            # 'Analysis 1': {'Group': [['PC', 0],],
-                                            #               'Start': start,
-                                            #               'Stop': stop,
-                                            #               'Time bin': 1,
-                                            #               'Moving average': 31,
-                                            #               },
+                                            'Analysis 0': {'Group': [['PC_L23', 0],],
+                                                          'Start': pulse1,
+                                                          'Stop': pulse1+50,
+                                                          'Time bin': 1,
+                                                          'Moving average': 31,
+                                                          'Graphs': False,
+                                                          },
+                                            'Analysis 1': {'Group': [['PC_L5', 0],],
+                                                          'Start': pulse1,
+                                                          'Stop': pulse1+50,
+                                                          'Time bin': 1,
+                                                          'Moving average': 31,
+                                                          'Graphs': False,
+                                                          },
+                                            'Analysis 2': {'Group': [['PC_L23', 0],],
+                                                          'Start': pulse2,
+                                                          'Stop': pulse2+50,
+                                                          'Time bin': 1,
+                                                          'Moving average': 31,
+                                                          'Graphs': False,
+                                                          },
+                                            'Analysis 3': {'Group': [['PC_L5', 0],],
+                                                          'Start': pulse2,
+                                                          'Stop': pulse2+50,
+                                                          'Time bin': 1,
+                                                          'Moving average': 31,
+                                                          'Graphs': False,
+                                                          },
 
                                           }
 
@@ -673,7 +689,7 @@ if control_param['run']:
             Imonitort_list, I_list, LFPfrequency_list, LFPpower_list, MALFPfrequency_list, MALFPpower_list = cortex.frequency_analysis(analysis_params['Frequency'].values())
             
         if len(analysis_params['Populational rate'].values()):
-            popratet_lists, popratecount_lists, popratefreq_lists = cortex.population_rate(analysis_params['Populational rate'].values())
+           popratet_lists, popratecount_lists, popratefreq_lists, popspikescount_list = cortex.population_rate(analysis_params['Populational rate'].values())
             
         if len(analysis_params['Rate stratification'].values()):
             ratestratification_total_list, ratestratification_count_list, ratestratification_neuron_list = cortex.rate_stratification(analysis_params['Rate stratification'].values())

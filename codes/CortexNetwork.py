@@ -3550,12 +3550,24 @@ class CortexNetwork():
             
             if all_graphs:
             
-                bins_lims, dens_lims, dens_arr = build_hist(Vindstd)
+                # bins_lims, dens_lims, dens_arr = build_hist(Vindstd)
                 fig, ax = plt.subplots(figsize=(12, 10))
                 ax.set_xlabel('V standard deviation (mV)', fontsize=26)
-                ax.set_ylabel('number of neurons', fontsize=26)
-                ax.hist(Vindstd, bins=int(round(np.sqrt(len(Vindstd)), 0)))
+                ax.set_ylabel('relative frequency', fontsize=26)
+                h = ax.hist(Vindstd, bins=int(round(np.sqrt(len(Vindstd)), 0)))
                 ax.xaxis.set_tick_params(labelsize=26)
+                y1 = np.max(h[0])/len(Vindstd)
+                if y1 % 0.1 >= 0.05:
+                    yf = 0.1*(int(y1*10) + 1)
+                else:
+                    yf = 0.1*int(y1*10)
+                
+                yarr1 = np.arange(0, yf+0.01, 0.1)
+                yarr0 = yarr1*len(Vindstd)
+                
+                plt.gca()
+                plt.yticks(yarr0, np.round(yarr1, 1), fontsize=26)
+                
                 ax.yaxis.set_tick_params(labelsize=26)
                 fig.savefig('{}/V_analysis/Vindstd_{}.png'.format(sim_dir, curr_idc))
                 
@@ -4005,8 +4017,8 @@ class CortexNetwork():
                 filtered_log_power = gf1d(log_power, filtering_param)
                 filtered_log_freq = log_freq
                 
-            filtered_LFPfrequency_list.append(filtered_log_power)
-            filtered_LFPpower_list.append(filtered_log_freq)
+            filtered_LFPfrequency_list.append(filtered_log_freq)
+            filtered_LFPpower_list.append(filtered_log_power)
             
             # with open(Fq_file, 'a') as f:
                      
