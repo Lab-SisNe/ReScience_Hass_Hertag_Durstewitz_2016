@@ -42,7 +42,7 @@ control_param = {'Duration': 1200, # in ms
 ##### Obs: changing in scales1 does not take place if membrane and synaptic parameters are being recovered from previous simulation
 ##### Order of scale factors: [0] E -> E // [1] I -> E // [2] E -> I // [3] I -> I 
 gmax_scale = [1, 1, 1, 1]
-pCon_scale = [1, 1, 1, 1]
+pCon_scale = [1, 1, 1, 1]   
 
 ##### Order in axis 0: [0] C // [1] g_L // [2] E_L // [3] delta_T // [4] V_up //
 #####                  [5] tau_w //[6] a // [7] b // [8] V_r // [9] V_T // 
@@ -559,8 +559,6 @@ analysis_params['Rate stratification'] = {
 #       SynapsesMonitor, analysis_params, scales1, scales2, constant_current, 
 #       fluctuating_current, simulation_dir)
 
-param_std_scale = np.ones((10, 14)) * variability[varN]
-scales1 = gmax_scale, pCon_scale, param_std_scale
 
 variability = [0.2, 0.3, 0.5, 0.7, 0.8, 1]
 
@@ -572,13 +570,15 @@ PC_L5_spikes =[[] for N in range(len(variability))]
 for N in range(Ntrials):
     for varN in range(len(variability)):
         print('REPORT: Trial {}, variability {}\n'.format(N, variability[varN]))    
-    
+
         ###################################################################
         ##########################            #############################
         ########################## Simulation #############################
         ##########################            #############################
         ###################################################################
-    
+        param_std_scale = np.ones((10, 14)) * variability[varN]
+        scales1 = gmax_scale, pCon_scale, param_std_scale
+        
         start_time = time()
     
         print("REPORT: Simulation directory: '{}'\n".format(simulation_dir))
