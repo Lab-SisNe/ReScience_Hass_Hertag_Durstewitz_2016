@@ -707,12 +707,14 @@ if control_param['run']:
     plt.sca(ax)
     plt.vlines(pulse1, 0, cortex.NeuPar.shape[1]+15, color='black', linestyle='dotted', linewidth=2)
     plt.vlines(pulse1, min(target), max(target), color='purple', linestyle='--', linewidth=3)
+    ax.text(pulse1-38, 900, '(a)', fontsize=26)
     fig.savefig('{}/Raster_plot_regular1.png'.format(simulation_dir))
     
     fig, ax = cortex.raster_plot(tlims=[pulse2-25, pulse2+60], save=False, figuresize=(12, 10), plotsize=10)
     plt.sca(ax)
     plt.vlines(pulse2, 0, cortex.NeuPar.shape[1]+15, color='black', linestyle='dotted', linewidth=2)    
     plt.vlines(pulse2, min(target), max(target), color='purple', linestyle='--', linewidth=3)
+    ax.text(pulse2-38, 900, '(b)', fontsize=26)
     fig.savefig('{}/Raster_plot_regular2.png'.format(simulation_dir))
     
     

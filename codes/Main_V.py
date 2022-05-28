@@ -397,13 +397,13 @@ analysis_params['V analysis'] = {
                                           'Start': start,
                                           'Stop': stop,
                                           'Minimum spike number': 4,
-                                          'Graphs': True,
+                                          'Graphs': False,
                                         },
                         'Analysis 1': {'Group': [['PC', 0,],],
                                           'Start': start,
                                           'Stop': stop,
                                           'Minimum spike number': 4,
-                                          'Graphs': True,
+                                          'Graphs': False,
                                         },
 
                             }
@@ -697,5 +697,51 @@ if control_param['run']:
 # GroupSetup = [[['all', 0]],
 #               ]
 # cortex.groups_params(GroupSetup, simulation_dir)
+sim_dir = simulation_dir
+Vindstd0, Vindstd1 = Vstd_list
 
+fig, ax = plt.subplots(figsize=(12, 10))
+ax.set_xlabel('V standard deviation (mV)', fontsize=26)
+ax.set_ylabel('relative frequency', fontsize=26)
+h = ax.hist(Vindstd0, bins=int(round(np.sqrt(len(Vindstd0)), 0)))
+ax.xaxis.set_tick_params(labelsize=26)
+y1 = np.max(h[0])/len(Vindstd0)
+if y1 % 0.1 >= 0.05:
+    yf = 0.1*(int(y1*10) + 1)
+else:
+    yf = 0.1*int(y1*10)
 
+yarr1 = np.arange(0, yf+0.01, 0.1)
+yarr0 = yarr1*len(Vindstd0)
+
+plt.gca()
+plt.yticks(yarr0, np.round(yarr1, 1), fontsize=26)
+
+ax.yaxis.set_tick_params(labelsize=26)
+x0, x1 = ax.get_xlim()
+y0, y1 = ax.get_ylim()
+ax.text(0.15*x0 + 0.85*x1, 0.05*y0 + 0.95*y1, '(a)', fontsize=26)
+fig.savefig('{}/V_analysis/Vindstd_0.png'.format(sim_dir))
+
+fig, ax = plt.subplots(figsize=(12, 10))
+ax.set_xlabel('V standard deviation (mV)', fontsize=26)
+ax.set_ylabel('relative frequency', fontsize=26)
+h = ax.hist(Vindstd1, bins=int(round(np.sqrt(len(Vindstd1)), 0)))
+ax.xaxis.set_tick_params(labelsize=26)
+y1 = np.max(h[0])/len(Vindstd1)
+if y1 % 0.1 >= 0.05:
+    yf = 0.1*(int(y1*10) + 1)
+else:
+    yf = 0.1*int(y1*10)
+
+yarr1 = np.arange(0, yf+0.01, 0.1)
+yarr0 = yarr1*len(Vindstd1)
+
+plt.gca()
+plt.yticks(yarr0, np.round(yarr1, 1), fontsize=26)
+
+ax.yaxis.set_tick_params(labelsize=26)
+x0, x1 = ax.get_xlim()
+y0, y1 = ax.get_ylim()
+ax.text(0.15*x0 + 0.85*x1, 0.05*y0 + 0.95*y1, '(b)', fontsize=26)
+fig.savefig('{}/V_analysis/Vindstd_1.png'.format(sim_dir))
