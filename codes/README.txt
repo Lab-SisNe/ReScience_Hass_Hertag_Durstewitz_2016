@@ -9,7 +9,7 @@ del.
 
 ################################## FILES ##################################
 To perform a simulation, one should run one of the 'Main' files. 'Main.py' is the default main script, where details
-of simulation and analyses are specified, as described in the next section. Others main files are set to reproduce
+of simulation and analyses are specified, as described in the next section. Other main files are set to reproduce
 specific analyses:
 
 - 'Main_paramdistr.py': distribution of membrane parameters throughout the cell types in the column.
