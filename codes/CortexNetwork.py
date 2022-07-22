@@ -110,17 +110,17 @@ class CortexNetwork():
         
         sourceAMPA_gmaxscale, sourceGABA_gmaxscale, sourceNMDA_gmaxscale, targetAMPA_gmaxscale, targetGABA_gmaxscale, targetNMDA_gmaxscale = scales2
         
-        tau_on_AMPA = STypPar[1, 0]*ms
-        tau_on_GABA = STypPar[1, 1]*ms
-        tau_on_NMDA = STypPar[1, 2]*ms
+        tau_on_AMPA = STypPar[1, 0] * 10**-3
+        tau_on_GABA = STypPar[1, 1] * 10**-3
+        tau_on_NMDA = STypPar[1, 2] * 10**-3
         
-        tau_off_AMPA = STypPar[2, 0]*ms
-        tau_off_GABA = STypPar[2, 1]*ms
-        tau_off_NMDA =  STypPar[2, 2]*ms
+        tau_off_AMPA = STypPar[2, 0] * 10**-3
+        tau_off_GABA = STypPar[2, 1] * 10**-3
+        tau_off_NMDA =  STypPar[2, 2] * 10**-3
         
-        E_AMPA = STypPar[3, 0] * mV
-        E_GABA = STypPar[3, 1] * mV
-        E_NMDA = STypPar[3, 2] * mV
+        E_AMPA = STypPar[3, 0] * 10**-3
+        E_GABA = STypPar[3, 1] * 10**-3
+        E_NMDA = STypPar[3, 2] * 10**-3
 
         Mg_fac = STypPar[5, 2]
         Mg_slope = STypPar[6, 2]
@@ -4272,7 +4272,7 @@ class CortexNetwork():
             
         return ratestratification_total_list, ratestratification_count_list, ratestratification_neuron_list
                     
-    def raster_plot(self, tlims=False, save=True, in_s=False, layer_division=True, figuresize=(18,10), fontsize=26, plotsize=2.5, stripe=0):
+    def raster_plot(self, tlims=False, save=True, in_s=False, layer_division=True, figuresize=(18,10), fontsize=26, plotsize=2.5, stripe=0, savefig=False):
         """font
         Raster plot of spiking activity.
         """
@@ -4343,14 +4343,18 @@ class CortexNetwork():
         plt.yticks(newyticks, Ytick)
                 
         
-        curr_idc = 0
-        RPfile = '{}/Raster_plot_{}.png'.format(sim_dir, curr_idc)
-        while os.path.isfile(RPfile):
-            curr_idc += 1
-            RPfile = '{}/Raster_plot_{}.png'.format(sim_dir, curr_idc)
+        
         
         if save:
-            fig.savefig(RPfile)
+            if type(savefig) is str:
+                fig.savefig(savefig)
+            else:
+                curr_idc = 0
+                RPfile = '{}/Raster_plot_{}.png'.format(sim_dir, curr_idc)
+                while os.path.isfile(RPfile):
+                    curr_idc += 1
+                    RPfile = '{}/Raster_plot_{}.png'.format(sim_dir, curr_idc)
+                fig.savefig(RPfile)
         else:
             return fig, ax
 

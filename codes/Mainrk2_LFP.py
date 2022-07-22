@@ -717,7 +717,6 @@ ax.text(5.5, 3, '$1/f^3$', fontsize=26)
 
 source = 'I_tot'
 curr_idc = 0
-if not os.path.isdir('{}/{}_frequency'.format(simulation_dir, source)):
-    os.mkdir('{}/{}_frequency'.format(sim_dir, source))
-fig.savefig('{}/{}_frequency/SPD_{}_{}.png'.format(simulation_dir,source, source, curr_idc))
-
+if not os.path.isdir('Figures'):
+    os.mkdir('Figures')
+fig.savefig('Figures/Fig12.png')

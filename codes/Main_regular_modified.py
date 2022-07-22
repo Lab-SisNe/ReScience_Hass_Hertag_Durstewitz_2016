@@ -709,7 +709,9 @@ for N in range(Ntrials):
                 plt.sca(ax)
                 plt.vlines(pulse1, 0, cortex.NeuPar.shape[1]+15, color='black', linestyle='dotted', linewidth=2)
                 plt.vlines(pulse1, min(target), max(target), color='purple', linestyle='--', linewidth=3)
-                fig.savefig('{}/Raster_plot_regular1.png'.format(simulation_dir))
+                if not os.path.isdir('Figures'):
+                    os.mkdir('Figures')
+                fig.savefig('Figures/Fig14.png')
 
     
 ###############----------||| Parameters summary |||----------###############
@@ -753,5 +755,4 @@ ax.set_xlim(0, 120)
 plt.gca()
 plt.xticks([0, 50, 100])
 plt.legend(prop={'size': 26})
-fig.savefig('{}/Variability.png'.format(simulation_dir))
-
+fig.savefig('Figures/Fig15.png')

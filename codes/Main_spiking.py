@@ -711,4 +711,3 @@ cortex.connection_chi(ratestratification_neuron_list[1][0],ratestratification_ne
 
 
 
-

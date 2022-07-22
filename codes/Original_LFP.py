@@ -62,5 +62,6 @@ ax.text(3.25, 14.5, '1/f', fontsize=26)
 ax.text(5.5, 11, '$1/f^2$', fontsize=26)
 ax.text(5.5, 3, '$1/f^3$', fontsize=26)
 
-
-plt.savefig('{}/Fqspectrum_filtered.png'.format(simulation_dir))
+if not os.path.isdir('Figures'):
+    os.mkdir('Figures')
+plt.savefig('FIgures/Fig08.png'.format(simulation_dir))
