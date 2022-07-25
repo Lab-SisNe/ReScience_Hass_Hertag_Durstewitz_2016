@@ -513,7 +513,7 @@ analysis_params['Populational rate'] = {
                                           }
 
 ##### Output
-##### Figure Pop_rate_{}.png
+##### Figure Pop_rate_{}.euro
 
 ##### popratet_lists elements: lists of time points 
 ##### popratecount_lists elements: lists of the corresponding spike counts
@@ -689,7 +689,9 @@ if control_param['run']:
     
     ###############----------||| Raster plot |||----------###############
     
-    cortex.raster_plot(tlims=[max(0, control_param['Duration']-6000), control_param['Duration']], in_s=True, plotsize=5)
+    if not os.path.isdir('Figures'):
+        os.mkdir('Figures')
+    cortex.raster_plot(tlims=[max(0, control_param['Duration']-6000), control_param['Duration']], in_s=True, plotsize=5, savefig='Figures/Fig09.png')
     # cortex.raster_plot(tlims=[max(0, control_param['Duration']-1000), control_param['Duration']])
     # cortex.raster_plot(tlims=[max(0, control_param['Duration']-500), control_param['Duration']])
     
@@ -702,7 +704,6 @@ if control_param['run']:
 #               [[6,0], [13,0]], # IN-F groups --> Martinotti cells
 #               ]
 # cortex.groups_params(GroupSetup)
-
 
 
 

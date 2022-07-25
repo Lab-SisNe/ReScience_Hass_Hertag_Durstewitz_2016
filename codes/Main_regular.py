@@ -708,14 +708,17 @@ if control_param['run']:
     plt.vlines(pulse1, 0, cortex.NeuPar.shape[1]+15, color='black', linestyle='dotted', linewidth=2)
     plt.vlines(pulse1, min(target), max(target), color='purple', linestyle='--', linewidth=3)
     ax.text(pulse1-38, 900, '(a)', fontsize=26)
-    fig.savefig('{}/Raster_plot_regular1.png'.format(simulation_dir))
+    if not os.path.isdir('Figures'):
+        os.mkdir('Figures')
+    
+    fig.savefig('Figures/Fig13a.png')
     
     fig, ax = cortex.raster_plot(tlims=[pulse2-25, pulse2+60], save=False, figuresize=(12, 10), plotsize=10)
     plt.sca(ax)
     plt.vlines(pulse2, 0, cortex.NeuPar.shape[1]+15, color='black', linestyle='dotted', linewidth=2)    
     plt.vlines(pulse2, min(target), max(target), color='purple', linestyle='--', linewidth=3)
     ax.text(pulse2-38, 900, '(b)', fontsize=26)
-    fig.savefig('{}/Raster_plot_regular2.png'.format(simulation_dir))
+    fig.savefig('Figures/Fig13b.png')
     
     
 ###############----------||| Parameters summary |||----------###############
@@ -723,5 +726,4 @@ if control_param['run']:
 # GroupSetup = [[['all', 0]],
 #               ]
 # cortex.groups_params(GroupSetup, simulation_dir)
-
 

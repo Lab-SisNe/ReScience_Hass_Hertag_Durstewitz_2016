@@ -717,19 +717,20 @@ def SetCon_CommonNeighbour_Recur(Nsyn, Npop, pCon, pSelfCon):
             kk = 0
             kkk = 0
             
-            while kk < N_new:
-                cell1, cell2 = missing_pairs_id[k1_new[kkk]]
-                kkk+=1
-                
-                if cell1>cell2:
-                    pairs_select.extend([(cell1, cell2), (cell2, cell1)])
-                    select.extend([(cell1, cell2), (cell2, cell1)])
-                    kk += 1
+            if len(k1_new)>0 and len(missing_pairs_id) > 0:
+                while kk < N_new:
+                    cell1, cell2 = missing_pairs_id[k1_new[kkk]]
+                    kkk+=1
+                    
+                    if cell1>cell2:
+                        pairs_select.extend([(cell1, cell2), (cell2, cell1)])
+                        select.extend([(cell1, cell2), (cell2, cell1)])
+                        kk += 1
        
-            if len(pairs_select):
-                _ = np.unique(np.vstack(pairs_select), axis=0, return_counts=1)[1]
-
-            k_missing_act = k_missing_act.difference(set(select))
+                if len(pairs_select):
+                    _ = np.unique(np.vstack(pairs_select), axis=0, return_counts=1)[1]
+    
+                k_missing_act = k_missing_act.difference(set(select))
         
         if len(pairs_id_uni_old) > N_uni:            
             k1_old = np.arange(len(pairs_id_uni_old))

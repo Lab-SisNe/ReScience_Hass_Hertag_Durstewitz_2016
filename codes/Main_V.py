@@ -721,7 +721,10 @@ ax.yaxis.set_tick_params(labelsize=26)
 x0, x1 = ax.get_xlim()
 y0, y1 = ax.get_ylim()
 ax.text(0.15*x0 + 0.85*x1, 0.05*y0 + 0.95*y1, '(a)', fontsize=26)
-fig.savefig('{}/V_analysis/Vindstd_0.png'.format(sim_dir))
+
+if not os.path.isdir('Figures'):
+    os.mkdir('Figures')
+fig.savefig('Figures/Fig05a.png')
 
 fig, ax = plt.subplots(figsize=(12, 10))
 ax.set_xlabel('V standard deviation (mV)', fontsize=26)
@@ -744,4 +747,9 @@ ax.yaxis.set_tick_params(labelsize=26)
 x0, x1 = ax.get_xlim()
 y0, y1 = ax.get_ylim()
 ax.text(0.15*x0 + 0.85*x1, 0.05*y0 + 0.95*y1, '(b)', fontsize=26)
-fig.savefig('{}/V_analysis/Vindstd_1.png'.format(sim_dir))
+fig.savefig('Figures/Fig05b.png')
+
+
+
+
+

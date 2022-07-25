@@ -761,7 +761,9 @@ x0, x1 = ax2.get_xlim()
 y0, y1 = ax2.get_ylim()
 ax2.text(0.15*x0 + 0.85*x1, 0.05*y0 + 0.95*y1, '(c)', fontsize=26)
 
-fig.savefig('{}/ISI_analysis.png'.format(simulation_dir))
+if not os.path.isdir('Figures'):
+    os.mkdir('Figures')
+fig.savefig('Figures/Fig10.png')
 
 fig, [ax0, ax1] = plt.subplots(1, 2, figsize=(18,10))
 fig.subplots_adjust(left=0.1,
@@ -784,4 +786,4 @@ ax1.set_ylabel('autocorrelation', fontsize=26)
 plt.sca(ax1)
 plt.xticks([2, 100, 200, 300], fontsize=26)
 ax1.tick_params(labelsize=26)
-fig.savefig('{}/ISI_autocorrelation.png'.format(simulation_dir))
+fig.savefig('Figures/Fig11.png')

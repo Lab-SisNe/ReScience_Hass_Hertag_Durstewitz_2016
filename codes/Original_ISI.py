@@ -108,8 +108,9 @@ x0, x1 = ax2.get_xlim()
 y0, y1 = ax2.get_ylim()
 ax2.text(0.15*x0 + 0.85*x1, 0.05*y0 + 0.95*y1, '(c)', fontsize=26)
 
-
-fig.savefig('{}/spanalysis.png'.format(simulation_dir))
+if not os.path.isdir('Figures'):
+    os.mkdir('Figures')
+fig.savefig('Figures/Fig06.png'.format(simulation_dir))
  
 CC0 = Zero_lag_Pearson_correlation_group(stset, 1000, 61000, 2)
 meanCC0 = np.mean(CC0)
@@ -201,4 +202,5 @@ ax1.set_ylabel('autocorrelation', fontsize=26)
 plt.sca(ax1)
 plt.xticks([2, 100, 200, 300], fontsize=26)
 ax1.tick_params(labelsize=26)
-fig.savefig('{}/ISI_autocorrelation.png'.format(simulation_dir))
+
+fig.savefig('Figures/Fig07.png'.format(simulation_dir))

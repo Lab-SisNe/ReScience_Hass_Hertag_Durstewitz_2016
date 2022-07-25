@@ -694,7 +694,9 @@ if control_param['run']:
     
     plt.vlines(pulse1, min(target1), max(target1), color='purple', linestyle='--',  linewidth=3)
     plt.vlines(pulse1+100, min(target1), max(target1), color='green', linestyle='--',  linewidth=3)
-    fig.savefig('{}/Raster_plot_poisson1.png'.format(simulation_dir))
+    if not os.path.isdir('Figures'):
+        os.mkdir('Figures')
+    fig.savefig('Figures/Fig16a.png')
     
     target2 = np.asarray(cortex.group_distr[7][0])+15
     
@@ -705,7 +707,7 @@ if control_param['run']:
     
     plt.vlines(pulse2, min(target2), max(target2), color='purple', linestyle='--' , linewidth=3)
     plt.vlines(pulse2+100, min(target2), max(target2), color='green', linestyle='--' , linewidth=3)
-    fig.savefig('{}/Raster_plot_poisson2.png'.format(simulation_dir))
+    fig.savefig('Figures/Fig16b.png')
     
 
     
@@ -714,5 +716,4 @@ if control_param['run']:
 # GroupSetup = [[['all', 0]],
 #               ]
 # cortex.groups_params(GroupSetup, simulation_dir)
-
 

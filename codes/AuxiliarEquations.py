@@ -4,7 +4,7 @@ from scipy.signal import argrelextrema as argex
 from matplotlib import pyplot as plt
 from scipy.signal import hilbert, butter, lfilter, periodogram, welch
 from scipy.ndimage import gaussian_filter1d as gf1d
-import antropy as ant
+# import antropy as ant
 
 
 def w_V(I, V, params):
@@ -512,27 +512,27 @@ def SE_signal_group1(signal_matrix, t0, t1, dt, not_matrix=False, return_periodo
     else:
         return se
 
-def SE_signal_group2(signal_matrix, t0, t1, dt, not_matrix=False):
-    """ Returns network spectral entropy as the mean of individual SPD spectral entropy"""
+# def SE_signal_group2(signal_matrix, t0, t1, dt, not_matrix=False):
+#     """ Returns network spectral entropy as the mean of individual SPD spectral entropy"""
     
-    if not_matrix:
-        mat = np.zeros((len(signal_matrix), len(signal_matrix[0])))
-        for i in range(len(signal_matrix)):
-            mat[i] = signal_matrix[i]
-        signal_matrix = mat
+#     if not_matrix:
+#         mat = np.zeros((len(signal_matrix), len(signal_matrix[0])))
+#         for i in range(len(signal_matrix)):
+#             mat[i] = signal_matrix[i]
+#         signal_matrix = mat
     
-    time_arr = np.arange(t0, t1, dt)
-    time_bool = np.where((time_arr>=t0) & (time_arr<t1))[0]
-    signal_matrix = signal_matrix[:, time_bool]
+#     time_arr = np.arange(t0, t1, dt)
+#     time_bool = np.where((time_arr>=t0) & (time_arr<t1))[0]
+#     signal_matrix = signal_matrix[:, time_bool]
     
-    SE = []
-    fs = 1000/dt
-    for i in range(signal_matrix.shape[0]):
-        SE.append(ant.spectral_entropy(signal_matrix[i], fs, normalize=True))
+#     SE = []
+#     fs = 1000/dt
+#     for i in range(signal_matrix.shape[0]):
+#         SE.append(ant.spectral_entropy(signal_matrix[i], fs, normalize=True))
         
-    SE = np.asarray(SE)
+#     SE = np.asarray(SE)
     
-    return np.mean(SE)
+#     return np.mean(SE)
 
 def set_binary_vector(spike_times, t0, t1, dt):
     
