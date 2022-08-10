@@ -1,3 +1,20 @@
+@article{bang18dis,
+   author= "Bang, D. and Fleming, S. M.",
+   title= "Distinct encoding of decision confidence in human medial prefrontal cortex",
+   journal= "Proceedings of the National Academy of Sciences {(USA)}",
+   volume= "115",
+   year= "2018",
+   pages= "6082-6087"
+}
+
+@Book{dayan05the,
+  author = 	 "Dayan, P. and Abbott, L. F.",
+  title = 	 "Theoretical Neuroscience: Computational and Mathematical Modeling of Neural Systems",
+  publisher = 	 "The MIT Press",
+  year = 	 "2005",
+  address = 	 "Cambridge, MA"
+}
+
 @article{Hass2016,
     doi = {10.1371/journal.pcbi.1004930},
     author = {Hass, Joachim AND Hertäg, Loreen AND Durstewitz, Daniel},
@@ -11,4 +28,120 @@
     pages = {1-29},
     abstract = {The prefrontal cortex is centrally involved in a wide range of cognitive functions and their impairment in psychiatric disorders. Yet, the computational principles that govern the dynamics of prefrontal neural networks, and link their physiological, biochemical and anatomical properties to cognitive functions, are not well understood. Computational models can help to bridge the gap between these different levels of description, provided they are sufficiently constrained by experimental data and capable of predicting key properties of the intact cortex. Here, we present a detailed network model of the prefrontal cortex, based on a simple computationally efficient single neuron model (simpAdEx), with all parameters derived from in vitro electrophysiological and anatomical data. Without additional tuning, this model could be shown to quantitatively reproduce a wide range of measures from in vivo electrophysiological recordings, to a degree where simulated and experimentally observed activities were statistically indistinguishable. These measures include spike train statistics, membrane potential fluctuations, local field potentials, and the transmission of transient stimulus information across layers. We further demonstrate that model predictions are robust against moderate changes in key parameters, and that synaptic heterogeneity is a crucial ingredient to the quantitative reproduction of in vivo-like electrophysiological behavior. Thus, we have produced a physiologically highly valid, in a quantitative sense, yet computationally efficient PFC network model, which helped to identify key properties underlying spike time dynamics as observed in vivo, and can be harvested for in-depth investigation of the links between physiology and cognition.},
     number = {5},
+}
+
+@misc{ModelDB,
+  title = {A detailed data-driven network model of prefrontal cortex (original code)},
+  author  = {Hass, Joachim AND Hertäg, Loreen AND Durstewitz, Daniel},
+   howpublished = {\url{https://senselab.med.yale.edu/ModelDB/showModel.cshtml?model=189160\#tabs-7}},
+  note = {Accessed: 2022-05-21},
+}
+
+@misc{gslrk2,
+  title = {Numerical integration (Brian 2 documentation)},
+  howpublished = {\url{https://brian2.readthedocs.io/en/stable/user/numerical_integration.html}},
+  note = {Accessed: 2022-05-21},
+}
+
+@ARTICLE{hertag12ana,
+  
+AUTHOR={Hertäg, Loreen and Hass, Joachim and Golovko, Tatiana and Durstewitz, Daniel},   
+	 
+TITLE={An Approximation to the Adaptive Exponential Integrate-and-Fire Neuron Model Allows Fast and Predictive Fitting to Physiological Data},      
+	
+JOURNAL={Frontiers in Computational Neuroscience},      
+	
+VOLUME={6},      
+	
+YEAR={2012},      
+	  
+URL={https://www.frontiersin.org/article/10.3389/fncom.2012.00062},       
+	
+DOI={10.3389/fncom.2012.00062},      
+	
+ISSN={1662-5188},   
+   
+ABSTRACT={For large-scale network simulations, it is often desirable to have computationally tractable, yet in a defined sense still physiologically valid neuron models. In particular, these models should be able to reproduce physiological measurements, ideally in a predictive sense, and under different input regimes in which neurons may operate in vivo. Here we present an approach to parameter estimation for a simple spiking neuron model mainly based on standard f–I curves obtained from in vitro recordings. Such recordings are routinely obtained in standard protocols and assess a neuron’s response under a wide range of mean-input currents. Our fitting procedure makes use of closed-form expressions for the firing rate derived from an approximation to the adaptive exponential integrate-and-fire (AdEx) model. The resulting fitting process is simple and about two orders of magnitude faster compared to methods based on numerical integration of the differential equations. We probe this method on different cell types recorded from rodent prefrontal cortex. After fitting to the f–I current-clamp data, the model cells are tested on completely different sets of recordings obtained by fluctuating (“in vivo-like”) input currents. For a wide range of different input regimes, cell types, and cortical layers, the model could predict spike times on these test traces quite accurately within the bounds of physiological reliability, although no information from these distinct test sets was used for model fitting. Further analyses delineated some of the empirical factors constraining model fitting and the model’s generalization performance. An even simpler adaptive LIF neuron was also examined in this context. Hence, we have developed a “high-throughput” model fitting procedure which is simple and fast, with good prediction performance, and which relies only on firing rate information and standard physiological data widely and easily available.}
+}
+
+@Book{kandel13pri,
+  author = 	 "Kandel, E. R. and Schwartz, J. H. and Jessell, T. M. and Siegelbaum, S. A. and Hudspeth, A. J.",
+  title = 	 "Principles of Neural Science",
+  edition = "Fifth edition",
+  publisher = 	 "McGraw-Hill",
+  year = 	 "2013",
+  address =  "New York, NY"
+}
+
+@article{lombard13met,
+author = {Quiroga-Lombard, Claudio S. and Hass, Joachim and Durstewitz, Daniel},
+title = {Method for stationarity-segmentation of spike train data with application to the Pearson cross-correlation},
+journal = {Journal of Neurophysiology},
+volume = {110},
+number = {2},
+pages = {562-572},
+year = {2013},
+doi = {10.1152/jn.00186.2013},
+    note ={PMID: 23636729},
+
+URL = { 
+        https://doi.org/10.1152/jn.00186.2013
+    
+},
+
+    abstract = { Correlations among neurons are supposed to play an important role in computation and information coding in the nervous system. Empirically, functional interactions between neurons are most commonly assessed by cross-correlation functions. Recent studies have suggested that pairwise correlations may indeed be sufficient to capture most of the information present in neural interactions. Many applications of correlation functions, however, implicitly tend to assume that the underlying processes are stationary. This assumption will usually fail for real neurons recorded in vivo since their activity during behavioral tasks is heavily influenced by stimulus-, movement-, or cognition-related processes as well as by more general processes like slow oscillations or changes in state of alertness. To address the problem of nonstationarity, we introduce a method for assessing stationarity empirically and then “slicing” spike trains into stationary segments according to the statistical definition of weak-sense stationarity. We examine pairwise Pearson cross-correlations (PCCs) under both stationary and nonstationary conditions and identify another source of covariance that can be differentiated from the covariance of the spike times and emerges as a consequence of residual nonstationarities after the slicing process: the covariance of the firing rates defined on each segment. Based on this, a correction of the PCC is introduced that accounts for the effect of segmentation. We probe these methods both on simulated data sets and on in vivo recordings from the prefrontal cortex of behaving rats. Rather than for removing nonstationarities, the present method may also be used for detecting significant events in spike trains. }
+}
+
+
+@article{stimberg19bri,
+    title = "Brian {2}, an intuitive and efficient neural simulator",
+    volume = "8",
+    journal = "eLife",
+    author = "Stimberg, M. and Brette, R. and Goodman, D. F. M.",
+    year = "2019",
+    pages = "e47314"
+}
+
+@article{wise08for,
+   author= "Wise, S. P.",
+   title= "Forward frontal fields: phylogeny and fundamental function",
+   journal= "Trends in Neurosciences",
+   volume= "31",
+   year= "2008",
+   pages= "599-608"
+}
+
+
+@article{brette05ada,
+   author= "Brette, R. and Gerstner, W.",
+   title= "Adaptive exponential integrate-and-fire model as an effective description of neuronal activity",
+   journal= "Journal of Neurophysiology",
+   volume= "94",
+   year= "2005",
+   pages= "3637-3642"
+}
+
+@article{jahr90vol,
+   author= "Jahr, C.~E. and Stevens, C.~F.",
+   title= "Voltage dependence of {NMDA}-activated macroscopic conductances predicted
+   by single-channel kinetics",
+   journal= "Journal of Neuroscience",
+   volume= "10",
+   year= "1990",
+   pages= "3178–3182"
+}
+
+@article{maas02syn,
+   author= "Maas, W. and Markram, H.",
+   title= "Synapses as dynamic memory buffers",
+   journal= "Neural Networks",
+   volume= "15",
+   year= "2002",
+   pages= "155–161"
+}
+
+
+
+
+
 }

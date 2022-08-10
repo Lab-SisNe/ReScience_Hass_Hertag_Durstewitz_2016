@@ -11,13 +11,13 @@ title: "[Re]A Detailed Data-Driven Network Model of Prefrontal Cortex Reproduces
 # Affiliation "*" means contact author (required even for single-authored papers)
 authors:
   - name: Marcelo Rafael Silva Rempel
-    orcid: 0000-0000-0000-0000
+    orcid: 0000-0002-4585-3352
     email: marcelorempel@usp.br
     affiliations: 1,*
     
   - name: Nilton Liuji Kamiji
     orcid: 0000-0001-5006-6612
-    email: nilton.kamiji@usp.br
+    email: nilton.kamiji@usp.br, nilton.kamiji@gmail.com
     affiliations: 1,2
 
   - name: Antonio Carlos Roque
@@ -40,14 +40,14 @@ affiliations:
 
 
 # List of keywords (adding the programming language might be a good idea)
-keywords: data-driven network model, prefrontal cortex
+keywords: data-driven network model, prefrontal cortex, brian2, python
 
 # Code URL and DOI/SWH (url is mandatory for replication, doi after acceptance)
 # You can get a DOI for your code from Zenodo, or an SWH identifier from
 # Software Heritage.
 #   see https://guides.github.com/activities/citable-code/
 code:
-  - url: https://github.com/niltonlk/Hass_Hertag_Durstewitz_2016
+  - url: https://github.com/Lab-SisNe/ReScience_Hass_Hertag_Durstewitz_2016.git
   - doi: 
   - swh: 
 
@@ -64,7 +64,7 @@ replication:
  - doi:  # Regular digital object identifier
 
 # Don't forget to surround abstract with double quotes
-abstract: ""
+abstract: "The prefrontal cortex (PFC) plays an important role in planning, decision making, working memory, emotional modulation and social behaviour. Hass and colleagues developed a model of the PFC with physiological validity and predictive capability at the single neuron and network levels, in MATLAB, available on ModelDB. In this work we reimplemented the model using Python and the Brian 2 simulator, and discuss some aspects that were not explicitly specified in the original work."
 
 # Bibliography file (yours)
 bibliography: bibliography.bib
