@@ -236,13 +236,13 @@ The analyses were performed using the Python packages Matplotlib (version 3.0.3)
 
 In this section, we present the results obtained from tests on the reimplemented model. We did not replicate the tests comparing the model to experimental data.\\
 
-As in the original work, we found a relatively low fraction of spiking neurons in the whole population, particularly among the pyramidal cells. In 25 independent baseline simulations of 30 s each, we found 20.66\% $\pm$ 2.55\% (min: 16.95\%, max: 27.62\%) spiking neurons in the whole population. For the subpopulation of PC neurons, these numbers were 12.28\% $\pm$ 2.81\% (min: 8.12 \%, max: 20.12 \%). The raster plot in Figure \ref{fig:mainraster} shows a typical example of spiking activity for a baseline simulation.  \\
+As in the original work, we found a relatively low fraction of spiking neurons in the whole population, particularly among the pyramidal cells. In 25 independent baseline simulations of 30 s each, we found 20.66\% $\pm$ 2.55\% (min: 16.95\%, max: 27.62\%) spiking neurons in the whole population. For the subpopulation of PC neurons, these numbers were 12.28\% $\pm$ 2.81\% (min: 8.12 \%, max: 20.12 \%). The raster plot in Figure \ref{fig:fig1} shows a typical example of spiking activity for a baseline simulation.  \\
 
 \begin{figure}[H]
     
-    \includegraphics[scale=0.30]{mainrasterplota2.png}
+    \includegraphics[scale=0.30]{Figures/Fig1.png}
     \caption{Raster plot of baseline spiking activity. The two layers (L2/3 and L5) are separated by a black dashed line, pyramidal cells are in blue and interneurons are in red.}
-    \label{fig:mainraster}
+    \label{fig:fig1}
 \end{figure}
 
 Membrane parameters followed broad distributions with differences among cell types, as one can see in Table \ref{tab:membparams}. We further assessed ten independent 30 s baseline simulations to evaluate differences in the rheobase current $I_{SN}$ and the membrane and synaptic parameters between spiking and non-spiking cells in the whole column. The same comparison was made exclusively for the PC cells, either only from L2/3 or only from L5, and also for the two layers together. As in the original work, the rheobase current was significantly lower for spiking cells in all simulations (see Table \ref{tab:tab5}). We also found neurons with negative rheobase, corresponding to ``spontaneous generators''.\\
@@ -315,20 +315,20 @@ In regard to the network parameters, we compared spiking and non-spiking cells p
 
 Comparing the connection probabilities $p_{\text{con}}$ for excitatory and inhibitory synapses using the chi-squared test with significance of 0.05, we did not find significant differences between spiking and not-spiking neurons.\\
 
-We analysed the spiking statistics of the network based on a 60 s baseline simulation (see Figure~\ref{fig:ISI_stats}). The distribution of the mean ISI of individual neurons (Figure~\ref{fig:ISI_stats}(a)) is monotonically decreasing with a heavy tail and mean and standard deviation of comparable sizes ($523 \pm 655 \text{ ms}$, mean $\pm$ SD). The distribution of the $C_V$s of ISIs (Figure~\ref{fig:ISI_stats}(b)) has a mean value close to one ($1.13 \pm 0.49$, mean $\pm$ SD). The Pearson cross-correlations between spiking neuron pairs has very low values, with a peak around lag zero and a fast decay for both positive and negative lag values (Figure~\ref{fig:ISI_stats}(c)). For lag zero, the cross-correlation between spiking neuron pairs is $9.7 \times 10^{-4} \pm 6.7 \times 10^{-3}$ (mean $\pm$ SD). The autocorrelation (Figure~\ref{fig:ISI_autoC}(a)) has a peak at lag 0, a fast decay and a trough between 0 and 5ms (see the graph in Figure~\ref{fig:ISI_autoC}(b)) and then remains near zero.  These results, in agreement with the original article, are consistent with an asynchronous irregular state.\\
+We analysed the spiking statistics of the network based on a 60 s baseline simulation (see Figure~\ref{fig:fig2}). The distribution of the mean ISI of individual neurons (Figure~\ref{fig:fig2}(a)) is monotonically decreasing with a heavy tail and mean and standard deviation of comparable sizes ($523 \pm 655 \text{ ms}$, mean $\pm$ SD). The distribution of the $C_V$s of ISIs (Figure~\ref{fig:fig2}(b)) has a mean value close to one ($1.13 \pm 0.49$, mean $\pm$ SD). The Pearson cross-correlations between spiking neuron pairs has very low values, with a peak around lag zero and a fast decay for both positive and negative lag values (Figure~\ref{fig:fig2}(c)). For lag zero, the cross-correlation between spiking neuron pairs is $9.7 \times 10^{-4} \pm 6.7 \times 10^{-3}$ (mean $\pm$ SD). The autocorrelation (Figure~\ref{fig:fig3}(a)) has a peak at lag 0, a fast decay and a trough between 0 and 5ms (see the graph in Figure~\ref{fig:fig3}(b)) and then remains near zero.  These results, in agreement with the original article, are consistent with an asynchronous irregular state.\\
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.3]{ISI3.png}
+    \includegraphics[scale=0.3]{Figures/Fig2.png}
     \caption{(a) Histogram of mean ISIs of spiking neurons. (b) Histogram of $CV_{\text{ISI}}$ values of spiking neurons. (c) Mean Pearson cross-correlation averaged across 200 pairs of spiking neurons.}
-    \label{fig:ISI_stats}
+    \label{fig:fig2}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.3]{autocor.png}
+    \includegraphics[scale=0.3]{Figures/Fig3.png}
     \caption{(a) Mean autocorrelation of ISIs of spiking neurons. (b) Same plot as in (a) with increased scale of vertical axis and origin of horizontal axis shifted to 2 ms.}
-    \label{fig:ISI_autoC}
+    \label{fig:fig3}
 \end{figure}
 
 We estimated the LFP from a 30 second baseline simulation as described in Methods (Figure \ref{fig:LFP}). In agreement with the original article, we found an approximate power-law distribution ($P \approx 1/f^{\alpha}$) with $\alpha \approx 1$ for frequencies below 60 Hz %($\approx 4.09 \text{ log}([Hz])$ 
@@ -336,140 +336,140 @@ and $2 < \alpha < 3$ for frequencies above 60 Hz (Figure \ref{fig:LFP}).\\
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.25]{LFP1.png}
+    \includegraphics[scale=0.25]{Figures/Fig4.png}
     \caption{Power spectrum of the LFP of baseline activity.}
     \label{fig:LFP}
 \end{figure}
 
-Also in agreement with the original article, spiking neurons displayed a broad range of membrane potential fluctuations. After removing spike events as described in Methods, the standard deviation of the membrane potentials of spiking neurons was $2.82 \text{ mV } \pm 1.43 \text{ mV}$ (mean $\pm$ std) for the whole column (Figure \ref{fig:Vstd}(a)), and $2.42 \text { mV } \pm 0.94 \text{ mV}$ (mean $\pm$ std) for pyramidal cells only (Figure \ref{fig:Vstd}(b)).
+Also in agreement with the original article, spiking neurons displayed a broad range of membrane potential fluctuations. After removing spike events as described in Methods, the standard deviation of the membrane potentials of spiking neurons was $2.82 \text{ mV } \pm 1.43 \text{ mV}$ (mean $\pm$ std) for the whole column (Figure \ref{fig:fig5}(a)), and $2.42 \text { mV } \pm 0.94 \text{ mV}$ (mean $\pm$ std) for pyramidal cells only (Figure \ref{fig:fig5}(b)).
 
 \begin{figure}[H]
     \centering
     \begin{minipage}[b]{0.45\textwidth}
-    \includegraphics[scale=0.23]{Vstdall2.png}
+    \includegraphics[scale=0.23]{Figures/Fig5a.png}
     \end{minipage}
     \hfill
     \begin{minipage}[b]{0.5\textwidth}
-        \includegraphics[scale=0.23]{VstdPC2.png}
+        \includegraphics[scale=0.23]{Figures/Fig5b.png}
     \end{minipage}
     \caption{(a) Histogram of standard deviations of the membrane potentials of individual spiking neurons in the whole column. (b) Same as in (a) but only for pyramidal cells.}
-    \label{fig:Vstd}
+    \label{fig:fig5}
 \end{figure}
 
-For a more consistent comparison, we performed the same spike statistics and LFP analyses as above in a 60 s baseline simulation of the original MATLAB code available in the ModelDB repository (\url{https://senselab.med.yale.edu/ModelDB/ShowModel?model=189160#tabs-1}). The results are shown in Figures (\ref{fig:ISIoriginal}), (\ref{fig:autoCoriginal}) and (\ref{fig:LFPoriginal}) and are in good quantitative agreement with the ones shown in Figures (\ref{fig:ISI_stats}), (\ref{fig:ISI_autoC}) and (\ref{fig:LFP}), respectively. The numerical values for the simulation of the original MATLAB code are: mean ISI ($516 \text{ ms } \pm 680 \text{ ms}$, mean $\pm$ std); CV$_{\text{ISI}}$ ($1.10 \pm 0.45$, mean $\pm$ std); and zero-lag value of the Pearson cross-correlation between neuron pairs ($6.7 \times 10^{-4} \pm 6.5 \times 10^{-3}$, mean $\pm$ SD). \\
+For a more consistent comparison, we performed the same spike statistics and LFP analyses as above in a 60 s baseline simulation of the original MATLAB code available in the ModelDB repository (\url{https://senselab.med.yale.edu/ModelDB/ShowModel?model=189160#tabs-1}). The results are shown in Figures (\ref{fig:fig6}), (\ref{fig:fig7}) and (\ref{fig:fig8}) and are in good quantitative agreement with the ones shown in Figures (\ref{fig:fig2}), (\ref{fig:fig3}) and (\ref{fig:LFP}), respectively. The numerical values for the simulation of the original MATLAB code are: mean ISI ($516 \text{ ms } \pm 680 \text{ ms}$, mean $\pm$ std); CV$_{\text{ISI}}$ ($1.10 \pm 0.45$, mean $\pm$ std); and zero-lag value of the Pearson cross-correlation between neuron pairs ($6.7 \times 10^{-4} \pm 6.5 \times 10^{-3}$, mean $\pm$ SD). \\
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.30]{ISIoriginal3.png}
+    \includegraphics[scale=0.30]{Figures/Fig6.png}
     \caption{Spike statistics for a simulation of the original MATLAB code. (a) Histogram of mean ISIs of spiking neurons. (b) Histogram of $CV_{\text{ISI}}$ values of spiking neurons. (c) Mean Pearson cross-correlation averaged across 200 pairs of spiking neurons.}
-    \label{fig:ISIoriginal}
+    \label{fig:fig6}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.30]{autocorroriginal.png}
+    \includegraphics[scale=0.30]{Figures/Fig7.png}
     \caption{(a) Mean autocorrelation of ISIs of spiking neurons for a simulation of the original MATLAB code. (b) Same as in (a) with increased scale of vertical axis and origin of horizontal axis shifted to 2 ms.}
-    \label{fig:autoCoriginal}
+    \label{fig:fig7}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.3]{LFPoriginal2.png}
+    \includegraphics[scale=0.3]{Figures/Fig8.png}
     \caption{Power spectrum of the LFP of baseline activity for a simulation of the original MATLAB code.}
-    \label{fig:LFPoriginal}
+    \label{fig:fig8}
 \end{figure}
 
-We also performed the above analyses solving the EDOs with the Brian2 gsl\_rk2 algorithm, which implements a second order Runge-Kutta method with adaptive time step. The results are in good quantitative agreement with the two replications presented above. A raster plot of spiking activity can be seen in Figure \ref{fig:mainrasterrk2} and the plots for the spiking statistics and power spectrum can be seen in Figures (\ref{fig:ISIrk2}), (\ref{fig:ISIautoCrk2}) and (\ref{fig:LFPrk2}). The numerical values are: mean ISI ($511 \text{ ms } \pm 665 \text{ ms}$, mean $\pm$ SD); CV$_{\text{ISI}}$ ($0.97 \pm 0.45$, mean $\pm$ SD); and zero-lag value of the Pearson cross-correlation between neuron pairs ($7.0 \times 10^{-4} \pm 6.4 \times 10^{-3}$).\\ 
+We also performed the above analyses solving the EDOs with the Brian2 gsl\_rk2 algorithm, which implements a second order Runge-Kutta method with adaptive time step. The results are in good quantitative agreement with the two replications presented above. A raster plot of spiking activity can be seen in Figure \ref{fig:fig9} and the plots for the spiking statistics and power spectrum can be seen in Figures (\ref{fig:fig10}), (\ref{fig:fig11}) and (\ref{fig:fig12}). The numerical values are: mean ISI ($511 \text{ ms } \pm 665 \text{ ms}$, mean $\pm$ SD); CV$_{\text{ISI}}$ ($0.97 \pm 0.45$, mean $\pm$ SD); and zero-lag value of the Pearson cross-correlation between neuron pairs ($7.0 \times 10^{-4} \pm 6.4 \times 10^{-3}$).\\ 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.3]{mainrasterplotrk2.png}
+    \includegraphics[scale=0.3]{Figures/Fig9.png}
     \caption{Raster plot of baseline spiking activity obtained with Brian2 gsl\_rk2 algorithm.}
-    \label{fig:mainrasterrk2}
+    \label{fig:fig9}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.3]{ISIrk23.png}
+    \includegraphics[scale=0.3]{Figures/Fig10.png}
     \caption{Spike statistics for the simulation of the model using the Brian gsl\_rk2 algorithm. (a) Histogram of mean ISIs of spiking neurons. (b) Histogram of $CV_{\text{ISI}}$ values of spiking neurons. (c) Mean Pearson cross-correlation averaged across 200 pairs of spiking neurons.}
-    \label{fig:ISIrk2}
+    \label{fig:fig10}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.3]{autocorrrk2.png}
+    \includegraphics[scale=0.3]{Figures/Fig11.png}
     \caption{(a) Mean autocorrelation of ISIs of spiking neurons for the simulation of the model using the Brian gsl\_rk2 algorithm. (b) Same as in (a) with increased scale of vertical axis and origin of horizontal axis shifted to 2 ms.}
-    \label{fig:ISIautoCrk2}
+    \label{fig:fig11}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.3]{LFPrk22.png}
+    \includegraphics[scale=0.3]{Figures/Fig12.png}
     \caption{Power spectrum of the LFP of baseline activity for the simulation of the model using the Brian gsl\_rk2 algorithm. }
-    \label{fig:LFPrk2}
+    \label{fig:fig12}
 \end{figure}
 
-We next investigated the L2/3 and L5 responses to brief regular stimuli (see Stimulation protocols in Methods). We applied 250 regular spikes to 10\% of the PCs in L2/3 with synaptic strength $g_{\text{syn}}$ = 0.1 nS. This induced a strong activation of the L2/3 cells after 3-4 ms followed by an activation of the L5 cells after 11-12 ms of the stimulus onset (Figure \ref{fig:regular1}(a)). These two delays are greater than what would be expected from the individual synaptic delay $\tau_D$ (synapses to PCs have $\tau_D$s with mean $\pm$ std equal to 1.82 ms $\pm$ 0.74 ms and 1.74 ms $\pm$ 0.39 ms in L2/3 and L5, respectively), suggesting that they depend on network rather than single-cell dynamics. For a stronger stimulation consisting of 500 regular spikes within 5 ms, we observed a faster and longer activation of the L2/3 cells; on the other hand, the activation of the L5 cells was also faster but the duration was shorter (Figure \ref{fig:regular1}(b)).\\
+We next investigated the L2/3 and L5 responses to brief regular stimuli (see Stimulation protocols in Methods). We applied 250 regular spikes to 10\% of the PCs in L2/3 with synaptic strength $g_{\text{syn}}$ = 0.1 nS. This induced a strong activation of the L2/3 cells after 3-4 ms followed by an activation of the L5 cells after 11-12 ms of the stimulus onset (Figure \ref{fig:fig13}(a)). These two delays are greater than what would be expected from the individual synaptic delay $\tau_D$ (synapses to PCs have $\tau_D$s with mean $\pm$ std equal to 1.82 ms $\pm$ 0.74 ms and 1.74 ms $\pm$ 0.39 ms in L2/3 and L5, respectively), suggesting that they depend on network rather than single-cell dynamics. For a stronger stimulation consisting of 500 regular spikes within 5 ms, we observed a faster and longer activation of the L2/3 cells; on the other hand, the activation of the L5 cells was also faster but the duration was shorter (Figure \ref{fig:fig13}(b)).\\
 
 \begin{figure}[H]
     \centering
     \begin{minipage}[b]{0.45\textwidth}
-    \includegraphics[scale=0.23]{regular6a.png}
+    \includegraphics[scale=0.23]{Figures/Fig13a.png}
     \end{minipage}
     \hfill
     \begin{minipage}[b]{0.5\textwidth}
-        \includegraphics[scale=0.23]{regular6b.png}
+        \includegraphics[scale=0.23]{Figures/Fig13b.png}
     \end{minipage}
     \caption{Propagation of transient input. (a) Raster plot of spiking activity in response to an external input (dashed line) to 10\% of the PCs in L2/3 consisting of 250 spikes in 5 ms. (b) same as in (a) but the with 500 spikes in 5ms.}
-    \label{fig:regular1}
+    \label{fig:fig13}
 \end{figure}
 
-To examine the dependence of network dynamics on neuronal heterogeneity, we analyzed the propagation of transient input in a network with reduced  parameter variability (but no change in the means). For a reduction to 20\% of the original value in the the standard deviation of all the membrane parameters, the response of the L2/3 cells was similar to the one without variability but the response of the L5 cells was significantly weaker (Figure \ref{fig:rp80}). As shown in Figure \ref{fig:variab}, the response (defined as the number of spikes in the first 50 ms after stimulus onset) of L5 PCs to a brief transient input is more strongly affected by the variability of membrane parameters than the response of L2/3 PCs. \\
+To examine the dependence of network dynamics on neuronal heterogeneity, we analyzed the propagation of transient input in a network with reduced  parameter variability (but no change in the means). For a reduction to 20\% of the original value in the the standard deviation of all the membrane parameters, the response of the L2/3 cells was similar to the one without variability but the response of the L5 cells was significantly weaker (Figure \ref{fig:fig14}). As shown in Figure \ref{fig:fig15}, the response (defined as the number of spikes in the first 50 ms after stimulus onset) of L5 PCs to a brief transient input is more strongly affected by the variability of membrane parameters than the response of L2/3 PCs. \\
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.25]{regularmod3.png}
-    \caption{Raster plot of spiking activity for the same conditions as in Figure \ref{fig:regular1}(a) but with the standard deviations of the membrane parameters reduced to 20\% of the original values.}
-    \label{fig:rp80}
+    \includegraphics[scale=0.25]{Figures/Fig14.png}
+    \caption{Raster plot of spiking activity for the same conditions as in Figure \ref{fig:fig13}(a) but with the standard deviations of the membrane parameters reduced to 20\% of the original values.}
+    \label{fig:fig14}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale=0.25]{Variab5.png}
+    \includegraphics[scale=0.25]{Figures/Fig15.png}
     \caption{Effect of neuronal variability on the response to transient stimuli. Plot of the relative variation of the number of spikes as a function of the percentage of the original standard deviation of neuronal parameters, for PCs in L2/3 and L5. Spiking activity was measured as the spike count during the first 50 ms after stimulus onset. Each data point is the mean $\pm$ SEM over 18 independent simulations.}
-    \label{fig:variab}
+    \label{fig:fig15}
 \end{figure}
 
-We further investigated whether or not there is bidirectional symmetry in the transmission of stimuli between L2/3 and L5. To do this, we applied Poisson spike trains of 100 ms of duration (as described in Stimulation protocols in Methods) to 10\% of PCs in either L2/3 or L5 and observed the effect on the network. When the stimulation was applied to L2/3 the activation propagated to L5 (Figure~\ref{fig:Poisson1}(a)), but when the stimulation was applied to L5 it did not propagate to L2/3 (Figure~\ref{fig:Poisson1}(b)).\\  
+We further investigated whether or not there is bidirectional symmetry in the transmission of stimuli between L2/3 and L5. To do this, we applied Poisson spike trains of 100 ms of duration (as described in Stimulation protocols in Methods) to 10\% of PCs in either L2/3 or L5 and observed the effect on the network. When the stimulation was applied to L2/3 the activation propagated to L5 (Figure~\ref{fig:fig16}(a)), but when the stimulation was applied to L5 it did not propagate to L2/3 (Figure~\ref{fig:fig16}(b)).\\  
 
-Finally, we studied the impact of suppressed inhibition on the dynamics of the network response to external stimuli. The study was done using the same stimulation protocol of the previous study, with Poisson external stimulation applied to either 10\% of PCs in L2/3 or 10\% of PCs in L5. The difference is that now we reduced the synaptic strengths of all the inhibitory synapses to 40\% of their original value. As can be seen in Figure~\ref{fig:Poisson2}(a), the stimulation of PCs in L2/3 produced epileptiform activity in both L2/3 and L5. On the other hand, the stimulation of PCs in L5 induced epileptiform activity only in L5 without propagation to L2/3 (Figure~\ref{fig:Poisson2}(b)).
+Finally, we studied the impact of suppressed inhibition on the dynamics of the network response to external stimuli. The study was done using the same stimulation protocol of the previous study, with Poisson external stimulation applied to either 10\% of PCs in L2/3 or 10\% of PCs in L5. The difference is that now we reduced the synaptic strengths of all the inhibitory synapses to 40\% of their original value. As can be seen in Figure~\ref{fig:fig17}(a), the stimulation of PCs in L2/3 produced epileptiform activity in both L2/3 and L5. On the other hand, the stimulation of PCs in L5 induced epileptiform activity only in L5 without propagation to L2/3 (Figure~\ref{fig:fig17}(b)).
 
 
 \begin{figure}[H]
     \begin{minipage}[b]{0.45\textwidth}
     \centering
-    \includegraphics[scale=0.23]{poisson1a.png}
+    \includegraphics[scale=0.23]{Figures/Fig16a.png}
     \end{minipage}
     \hfill
     \begin{minipage}[b]{0.5\textwidth}
     \centering
-    \includegraphics[scale=0.23]{poisson2b.png}
+    \includegraphics[scale=0.23]{Figures/Fig16b.png}
     \end{minipage}
     \caption{Bidirectional asymmetry in the network. (a) Raster plot of network spiking activity for a Poisson stimulation of 100 ms of duration (indicated by vertical dashed lines) applied to 10\% of PCs in L2/3. (b) Raster plot of network spiking activity for the same type of Poisson stimulation as in (a) applied to 10\% of PCs in L5.}
-    \label{fig:Poisson1}
+    \label{fig:fig16}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \begin{minipage}[b]{0.45\textwidth}
-    \includegraphics[scale=0.25]{poissonmod1.png}
+    \includegraphics[scale=0.25]{Figures/Fig17a.png}
     \end{minipage}
     \hfill
     \begin{minipage}[b]{0.5\textwidth}
-        \includegraphics[scale=0.25]{poissonmod2.png}
+        \includegraphics[scale=0.25]{Figures/Fig17b.png}
     \end{minipage}
-    \caption{Effect of supressed inhibition on the network activity. The raster plots in (a) and (b) correspond to the same types of stimulation as in Figures~\ref{fig:Poisson1}(a) and \ref{fig:Poisson1}(b) but now the synaptic strengths of the inhibitory synapses were reduced to 40\% of the original values.}
-    \label{fig:Poisson2}
+    \caption{Effect of supressed inhibition on the network activity. The raster plots in (a) and (b) correspond to the same types of stimulation as in Figures~\ref{fig:fig16}(a) and \ref{fig:fig16}(b) but now the synaptic strengths of the inhibitory synapses were reduced to 40\% of the original values.}
+    \label{fig:fig17}
 \end{figure}
 
 \section*{Conclusions}
