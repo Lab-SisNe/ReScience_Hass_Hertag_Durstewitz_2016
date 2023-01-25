@@ -1,3 +1,5 @@
+
+
 import numpy as np
 from matplotlib import pyplot as plt
 from scipy.ndimage import gaussian_filter1d as gf1d
@@ -132,28 +134,28 @@ def SPDfigures(frequency, power, file):
     fig.savefig(file)
     
 def fig01(cortex, xlim, path):
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
-    Tools.raster_plot(cortex, xlim=xlim, savefig=path+'\\Figures\\Fig01.png')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
+    Tools.raster_plot(cortex, xlim=xlim, savefig=os.path.join(path, 'Figures', 'Fig01.png'))
 
 def fig02(ISImean, ISICV, C_lags, crossC_mean, Correlation_sigma, path):
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
-    ISIfigures(ISImean, ISICV, C_lags, crossC_mean, Correlation_sigma, path+'\\Figures\\Fig02.png')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path,'Figures'))
+    ISIfigures(ISImean, ISICV, C_lags, crossC_mean, Correlation_sigma, os.join(path, 'Figures', 'Fig02.png'))
     
 def fig03(C_lags, autoC_mean, path):
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
-    autoCfigures(C_lags, autoC_mean, path+'\\Figures\\Fig03.png')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
+    autoCfigures(C_lags, autoC_mean, os.path.join(path, 'Figures', 'Fig03.png'))
     
 def fig04(frequency, power, path):
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
-    SPDfigures(frequency, power, path+'\\Figures\\Fig04.png')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
+    SPDfigures(frequency, power, os.path.join(path,'Figures','Fig04.png'))
    
 def fig05(VstdALL, VstdPC, path):
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
      
     fig, ax = plt.subplots(figsize=(12, 10))
     ax.set_xlabel('V standard deviation (mV)', fontsize=26)
@@ -178,7 +180,7 @@ def fig05(VstdALL, VstdPC, path):
     ax.text(0.15*x0 + 0.85*x1, 0.05*y0 + 0.95*y1, '(a)', fontsize=26)
 
     
-    fig.savefig(path+'\\Figures\\Fig05a.png')
+    fig.savefig(os.path.join(path,'Figures','Fig05a.png'))
 
     fig, ax = plt.subplots(figsize=(12, 10))
     ax.set_xlabel('V standard deviation (mV)', fontsize=26)
@@ -201,54 +203,54 @@ def fig05(VstdALL, VstdPC, path):
     x0, x1 = ax.get_xlim()
     y0, y1 = ax.get_ylim()
     ax.text(0.15*x0 + 0.85*x1, 0.05*y0 + 0.95*y1, '(b)', fontsize=26)
-    fig.savefig(path+'\\Figures\\Fig05b.png')
+    fig.savefig(os.path.join(path,'Figures','Fig05b.png'))
    
     
     
 def fig06(ISImean, ISICV, C_lags, crossC_mean, Correlation_sigma, path):
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
         
-    ISIfigures(ISImean, ISICV, C_lags, crossC_mean, Correlation_sigma, path+'\\Figures\\Fig06.png')
+    ISIfigures(ISImean, ISICV, C_lags, crossC_mean, Correlation_sigma, os.path.join(path,'Figures','Fig06.png'))
     
 def fig07(C_lags, autoC_mean, path):
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
         
-    autoCfigures(C_lags, autoC_mean, path+'\\Figures\\Fig07.png')
+    autoCfigures(C_lags, autoC_mean, os.path.join(path,'Figures','Fig07.png'))
     
 def fig08(frequency, power, path):
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
-    SPDfigures(frequency, power, path+'\\Figures\\Fig08.png')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
+    SPDfigures(frequency, power, os.path.join(path,'Figures','Fig08.png'))
 
 
 
 def fig09(cortex, xlim, path):
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
-    Tools.raster_plot(cortex, xlim=xlim, savefig=path+'\\Figures\\Fig09.png')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
+    Tools.raster_plot(cortex, xlim=xlim, savefig=os.path.join(path,'Figures','Fig09.png'))
 
 
 def fig10(ISImean, ISICV, C_lags, crossC_mean, Correlation_sigma, path):
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
-    ISIfigures(ISImean, ISICV, C_lags, crossC_mean, Correlation_sigma, path+'\\Figures\\Fig10.png')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
+    ISIfigures(ISImean, ISICV, C_lags, crossC_mean, Correlation_sigma, os.path.join(path,'Figures','Fig10.png'))
 
 def fig11(C_lags, autoC_mean, path):
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
-    autoCfigures(C_lags, autoC_mean, path+'\\Figures\\fig11.png')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
+    autoCfigures(C_lags, autoC_mean, os.path.join(path,'Figures','fig11.png'))
 
 def fig12(frequency, power, path):
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
-    SPDfigures(frequency, power, path+'\\Figures\\fig12.png')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
+    SPDfigures(frequency, power, os.path.join(path,'Figures','fig12.png'))
     
     
 def fig13(cortex, pulse0, pulse1, path):
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
     
     p0_t0, p0_t1 = pulse0
     p1_t0, p1_t1 = pulse1
@@ -256,30 +258,30 @@ def fig13(cortex, pulse0, pulse1, path):
     plt.vlines(p0_t0, 0, cortex.neurons.N+15, color='black', linestyle='dotted', linewidth=2)
     plt.vlines(p0_t0, min(cortex.neuron_idcs(('PC_L23', 0))), max(cortex.neuron_idcs(('PC_L23', 0))), color='purple', linestyle='--', linewidth=3)
     plt.text(p0_t0-38, 900, '(a)', fontsize=26)
-    plt.savefig(path + '\\Figures\\Fig13a.png')
+    plt.savefig(os.path.join(path, 'Figures','Fig13a.png'))
     
     Tools.raster_plot(cortex, xlim=(p1_t0-25, p1_t0+60), show=False)
     plt.vlines(p1_t0, 0, cortex.neurons.N+15, color='black', linestyle='dotted', linewidth=2)
     plt.vlines(p1_t0, min(cortex.neuron_idcs(('PC_L23', 0))), max(cortex.neuron_idcs(('PC_L23', 0))), color='purple', linestyle='--', linewidth=3)
     
     plt.text(p1_t0-38, 900, '(b)', fontsize=26)
-    plt.savefig(path+'\\Figures\\Fig13b.png')
+    plt.savefig(os.path.join(path,'Figures','Fig13b.png'))
     
 def fig14(cortex, pulse, path):
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
     p_t0, p_t1 = pulse
     
     Tools.raster_plot(cortex, xlim=(p_t0-25, p_t1+60), show=False)
     plt.vlines(p_t0, 0, cortex.neurons.N+15, color='black', linestyle='dotted', linewidth=2)
     plt.vlines(p_t0, min(cortex.neuron_idcs(('PC_L23', 0))), max(cortex.neuron_idcs(('PC_L23', 0))), color='purple', linestyle='--', linewidth=3)
     plt.text(p_t0-38, 900, '(a)', fontsize=26)
-    plt.savefig(path + '\\Figures\\Fig14.png')
+    plt.savefig(os.path.join(path,'Figures','Fig14.png'))
     
     
 def fig15(Membr_std_list, PC_L23, PC_L5, path):
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
     
     PC_L23_mean = []
     PC_L23_std = []
@@ -314,7 +316,7 @@ def fig15(Membr_std_list, PC_L23, PC_L5, path):
     plt.xlim(-20, 120)
     plt.xticks([0, 50, 100])
     plt.legend(prop={'size': 26})
-    plt.savefig(path+'\\Figures\\Fig15.png')
+    plt.savefig(os.path.join(path,'Figures','Fig15.png'))
     
 
 def poissonfigures(cortex, pulse0, pulse1, file0, file1):
@@ -347,11 +349,11 @@ def poissonfigures(cortex, pulse0, pulse1, file0, file1):
 
 
 def fig16(cortex, pulse0, pulse1, path):    
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
-    poissonfigures(cortex, pulse0, pulse1, path+'\\Figures\\Fig16a.png', path+'\\Figures\\Fig16b.png')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
+    poissonfigures(cortex, pulse0, pulse1, os.path.join(path,'Figures','Fig16a.png'), os.path.join(path,'Figures','Fig16b.png'))
     
 def fig17(cortex, pulse0, pulse1, path):    
-    if not os.path.isdir(path+'\\Figures'):
-        os.mkdir(path+'\\Figures')
-    poissonfigures(cortex, pulse0, pulse1, path+'\\Figures\\Fig17a.png', path+'\\Figures\\Fig17b.png')
+    if not os.path.isdir(os.path.join(path, 'Figures')):
+        os.mkdir(os.path.join(path, 'Figures'))
+    poissonfigures(cortex, pulse0, pulse1, os.path.join(path,'Figures','Fig17a.png'), os.path.join(path,'Figures','Fig17b.png'))
